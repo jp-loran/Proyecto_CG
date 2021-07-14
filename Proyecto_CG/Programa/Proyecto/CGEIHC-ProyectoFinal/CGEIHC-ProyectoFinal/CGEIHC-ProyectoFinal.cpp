@@ -52,8 +52,13 @@ float deltaTime = 0.0f;
 float lastFrame = 0.0f;
 float elapsedTime = 0.0f;
 
+// Variables para la transformacion
+// geometrica de objetos
 float modelRotation = 0.0f;
-Light   sun;
+
+// Fuentes de luz
+Light sun;
+Light comedor;
 
 
 // Entrada a función principal
@@ -100,9 +105,10 @@ int main()
 	// Carga la información del modelo
 	Model maderas("models/maderas.fbx");
 	Model opacos("models/opacos.fbx");
+	Model cristales("models/cristales.fbx");
 	Model donuts("models/materials/donuts.fbx");
 	Model sphere("models/materials/sphere.fbx");
-	Model monkey("models/materials/monkey.fbx");
+	//Model monkey("models/materials/monkey.fbx");
 	Model cubemap("models/cubemap.fbx");
 
 	// Cubemap
@@ -119,6 +125,8 @@ int main()
 
 	// Dibujar en malla de alambre
 	// glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+
+	// Definicion de fuentes de luz
 
 	// Loop de renderizado
 	while (!glfwWindowShouldClose(window))
@@ -195,6 +203,7 @@ int main()
 			glEnable(GL_BLEND);
 			glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
+			// MADERAS
 			Material madera;
 			// Propiedades materiales
 			madera.diffuse = glm::vec4(0.8, 0.8, 0.8, 1.0);
@@ -206,6 +215,7 @@ int main()
 
 			maderas.Draw(basicPhongShader);
 
+			// MATERIALES OPACOS
 			Material opaco;
 			// Propiedades materiales
 			opaco.diffuse = glm::vec4(0.8, 0.8, 0.8, 1.0);
@@ -238,7 +248,7 @@ int main()
 			basicPhongShader.setVec4("MaterialSpecularColor", mat3.specular);
 			basicPhongShader.setFloat("transparency", mat3.transparency);
 
-			monkey.Draw(basicPhongShader);
+			//monkey.Draw(basicPhongShader);
 
 		}
 
@@ -256,10 +266,10 @@ int main()
 
 			// Aplicamos transformaciones del modelo
 			glm::mat4 model = glm::mat4(1.0f);
-			model = glm::translate(model, glm::vec3(0.0f, 0.0f, 0.0f)); // translate it down so it's at the center of the scene
+			//model = glm::translate(model, glm::vec3(0.0f, 0.0f, 0.0f)); // translate it down so it's at the center of the scene
 			model = glm::rotate(model, glm::radians(-90.0f), glm::vec3(1.0f, 0.0f, 0.0f));
-			model = glm::rotate(model, glm::radians(0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
-			model = glm::rotate(model, glm::radians(180.0f), glm::vec3(0.0f, 0.0f, 1.0f));
+			//model = glm::rotate(model, glm::radians(0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+			//model = glm::rotate(model, glm::radians(180.0f), glm::vec3(0.0f, 0.0f, 1.0f));
 			model = glm::scale(model, glm::vec3(1.0f, 1.0f, 1.0f));	// it's a bit too big for our scene, so scale it down
 			fresnelShader.setMat4("model", model);
 
@@ -268,7 +278,20 @@ int main()
 			glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
 			glBindTexture(GL_TEXTURE_CUBE_MAP, cubemapTexture);
-			monkey.Draw(fresnelShader);
+			
+			// Cristales
+			Material cristal;
+			// Propiedades del material
+			cristal.ambient = glm::vec4(0.1, 0.1, 0.1, 1.0);
+			cristal.diffuse = glm::vec4(0.1, 0.1, 0.1, 1.0);
+			cristal.specular = glm::vec4(0.1, 0.1, 0.1, 1.0);
+			cristal.transparency = 0.5f;
+			fresnelShader.setVec4("MaterialAmbientColor", cristal.ambient);
+			fresnelShader.setVec4("MaterialDiffuseColor", cristal.diffuse);
+			fresnelShader.setVec4("MaterialSpecularColor", cristal.specular);
+			fresnelShader.setFloat("transparency", cristal.transparency);
+
+			cristales.Draw(fresnelShader);
 
 		}
 
