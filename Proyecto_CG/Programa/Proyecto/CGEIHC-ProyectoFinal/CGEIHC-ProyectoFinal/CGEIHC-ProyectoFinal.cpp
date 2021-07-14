@@ -39,7 +39,7 @@ const unsigned int SCR_WIDTH = 1024;
 const unsigned int SCR_HEIGHT = 768;
 
 // Definición de cámara (posición en XYZ)
-Camera camera(glm::vec3(0.0f, 0.0f, 10.0f));
+Camera camera(glm::vec3(8.0f, 1.8f, 1.0f));
 
 // Controladores para el movimiento del mouse
 float lastX = SCR_WIDTH / 2.0f;
@@ -53,7 +53,7 @@ float lastFrame = 0.0f;
 float elapsedTime = 0.0f;
 
 float modelRotation = 0.0f;
-Light   light0;
+Light   sun;
 
 
 // Entrada a función principal
@@ -182,12 +182,12 @@ int main()
 			basicPhongShader.setMat4("model", model);
 
 			// Propiedades de la luz
-			basicPhongShader.setVec3("lightPosition", light0.Position);
-			basicPhongShader.setVec3("lightDirection", light0.Direction);
-			basicPhongShader.setVec4("LightColor", light0.Color);
-			basicPhongShader.setVec4("LightPower", light0.Power);
-			basicPhongShader.setInt("alphaIndex", light0.alphaIndex);
-			basicPhongShader.setFloat("distance", light0.distance);
+			basicPhongShader.setVec3("lightPosition", sun.Position);
+			basicPhongShader.setVec3("lightDirection", sun.Direction);
+			basicPhongShader.setVec4("LightColor", sun.Color);
+			basicPhongShader.setVec4("LightPower", sun.Power);
+			basicPhongShader.setInt("alphaIndex", sun.alphaIndex);
+			basicPhongShader.setFloat("distance", sun.distance);
 
 			basicPhongShader.setVec3("eye", camera.Position);
 
@@ -197,8 +197,8 @@ int main()
 
 			Material madera;
 			// Propiedades materiales
-			madera.diffuse = glm::vec4(0.12, 0.12, 0.12, 1.0);
-			madera.specular = glm::vec4(0.8, 0.8, 0.8, 1.0);
+			madera.diffuse = glm::vec4(0.8, 0.8, 0.8, 1.0);
+			madera.specular = glm::vec4(0.9, 0.9, 0.9, 1.0);
 			basicPhongShader.setVec4("MaterialAmbientColor", madera.ambient);
 			basicPhongShader.setVec4("MaterialDiffuseColor", madera.diffuse);
 			basicPhongShader.setVec4("MaterialSpecularColor", madera.specular);
@@ -208,7 +208,8 @@ int main()
 
 			Material opaco;
 			// Propiedades materiales
-			opaco.diffuse = glm::vec4(0.5, 0.5, 0.5, 1.0);
+			opaco.diffuse = glm::vec4(0.8, 0.8, 0.8, 1.0);
+			opaco.diffuse = glm::vec4(0.3, 0.3, 0.3, 1.0);
 			basicPhongShader.setVec4("MaterialAmbientColor", opaco.ambient);
 			basicPhongShader.setVec4("MaterialDiffuseColor", opaco.diffuse);
 			basicPhongShader.setVec4("MaterialSpecularColor", opaco.specular);
