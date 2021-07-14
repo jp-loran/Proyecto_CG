@@ -1,3 +1,24 @@
+# ignore this type of files #
+#############################
 
-Proyecto_CG/casa.blend1
-Proyecto_CG/casa.blend1
+*.exe
+*.pdb
+*.ilk
+*.ipch
+*.tlog
+*.idb
+*.log
+*.suo
+*.db
+*.iobj
+*.ipdb
+*.opendb
+*.shm
+*.db-wal
+*.db-shm
+*/x64/*
+*/Debug/*
+*/Release/*
+*/deps/glad/src/glad/*
+Proyecto_CG/Programa/Proyecto/CGEIHC-ProyectoFinal/.vs/CGEIHC-ProyectoFinal/v16/ipch/AutoPCH/bad205655af63fb3/CGEIHC-PROYECTOFINAL.ipch
+*.ipch
