@@ -190,8 +190,10 @@ int main()
 			basicPhongShader.setMat4("model", model);
 
 			// Propiedades de la luz
+
 			basicPhongShader.setVec3("lightPosition", sun.Position);
 			basicPhongShader.setVec3("lightDirection", sun.Direction);
+
 			basicPhongShader.setVec4("LightColor", sun.Color);
 			basicPhongShader.setVec4("LightPower", sun.Power);
 			basicPhongShader.setInt("alphaIndex", sun.alphaIndex);
