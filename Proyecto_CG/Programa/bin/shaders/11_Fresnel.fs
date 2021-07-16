@@ -27,6 +27,7 @@ in float vReflectionFactor;
 // the cubemap texture
 uniform samplerCube cubetex;
 uniform sampler2D texture_diffuse1;
+uniform float transparency;
 
 void main(void)
 {
@@ -43,5 +44,5 @@ void main(void)
 
 	// sample just fresnel
 	FragColor = texel * mix( refractedColor, reflectedColor, clamp( vReflectionFactor, 0.0, 1.0 ) );
-	FragColor.a = 0.8f;
+	FragColor.a = transparency;
 }

@@ -54,7 +54,7 @@ float elapsedTime = 0.0f;
 
 // Variables para la transformacion
 // geometrica de objetos
-float modelRotation = 0.0f;
+float rotacionPuertas = 0.0f;
 
 // Fuentes de luz
 Light sun;
@@ -103,9 +103,16 @@ int main()
 	Shader fresnelShader("shaders/11_Fresnel.vs", "shaders/11_Fresnel.fs"); // metal y semitraslúcidos
 
 	// Carga la información del modelo
-	Model maderas("models/maderas.fbx");
+		// Estaticos
+	Model brillosos("models/brillosos.fbx");
 	Model opacos("models/opacos.fbx");
 	Model cristales("models/cristales.fbx");
+	Model metales("models/metales.fbx");
+
+	// Materiales en movimiento
+	
+	Model puertaPrincipal("models/PuertaPrincipal.fbx");
+
 	Model donuts("models/materials/donuts.fbx");
 	Model sphere("models/materials/sphere.fbx");
 	//Model monkey("models/materials/monkey.fbx");
@@ -206,16 +213,16 @@ int main()
 			glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
 			// MADERAS
-			Material madera;
+			Material brilloso;
 			// Propiedades materiales
-			madera.diffuse = glm::vec4(0.8, 0.8, 0.8, 1.0);
-			madera.specular = glm::vec4(0.9, 0.9, 0.9, 1.0);
-			basicPhongShader.setVec4("MaterialAmbientColor", madera.ambient);
-			basicPhongShader.setVec4("MaterialDiffuseColor", madera.diffuse);
-			basicPhongShader.setVec4("MaterialSpecularColor", madera.specular);
-			basicPhongShader.setFloat("transparency", madera.transparency);
+			brilloso.specular = glm::vec4(0.9, 0.9, 0.9, 1.0);
 
-			maderas.Draw(basicPhongShader);
+			basicPhongShader.setVec4("MaterialAmbientColor", brilloso.ambient);
+			basicPhongShader.setVec4("MaterialDiffuseColor", brilloso.diffuse);
+			basicPhongShader.setVec4("MaterialSpecularColor", brilloso.specular);
+			basicPhongShader.setFloat("transparency", brilloso.transparency);
+
+			brillosos.Draw(basicPhongShader);
 
 			// MATERIALES OPACOS
 			Material opaco;
@@ -229,28 +236,17 @@ int main()
 
 			opacos.Draw(basicPhongShader);
 
-			Material mat2;
-			// Propiedades materiales
-			mat2.diffuse = glm::vec4(1.0, 0.7, 0.7, 1.0);
-			mat2.specular = glm::vec4(0.5, 0.5, 0.5, 1.0);
-			mat2.transparency = 0.8f;
-			basicPhongShader.setVec4("MaterialAmbientColor", mat2.ambient);
-			basicPhongShader.setVec4("MaterialDiffuseColor", mat2.diffuse);
-			basicPhongShader.setVec4("MaterialSpecularColor", mat2.specular);
-			basicPhongShader.setFloat("transparency", mat2.transparency);
+			// Puertas
+			model = glm::translate(model, glm::vec3(-6.0822f, -0.359038f, 0.435927f));
+			model = glm::rotate(model, glm::radians(rotacionPuertas), glm::vec3(0.0f, 0.0f, 1.0f));
+			basicPhongShader.setMat4("model", model);
 
-			donuts.Draw(basicPhongShader);
+			basicPhongShader.setVec4("MaterialAmbientColor", brilloso.ambient);
+			basicPhongShader.setVec4("MaterialDiffuseColor", brilloso.diffuse);
+			basicPhongShader.setVec4("MaterialSpecularColor", brilloso.specular);
+			basicPhongShader.setFloat("transparency", brilloso.transparency);
 
-			Material mat3;
-			mat3.diffuse = glm::vec4(0.7, 0.7, 0.7, 1.0);
-			mat3.specular = glm::vec4(1.0, 1.0, 1.0, 1.0);
-			mat3.transparency = 0.8f;
-			basicPhongShader.setVec4("MaterialAmbientColor", mat3.ambient);
-			basicPhongShader.setVec4("MaterialDiffuseColor", mat3.diffuse);
-			basicPhongShader.setVec4("MaterialSpecularColor", mat3.specular);
-			basicPhongShader.setFloat("transparency", mat3.transparency);
-
-			//monkey.Draw(basicPhongShader);
+			puertaPrincipal.Draw(basicPhongShader);
 
 		}
 
@@ -281,19 +277,21 @@ int main()
 
 			glBindTexture(GL_TEXTURE_CUBE_MAP, cubemapTexture);
 			
+			
 			// Cristales
 			Material cristal;
 			// Propiedades del material
-			cristal.ambient = glm::vec4(0.1, 0.1, 0.1, 1.0);
-			cristal.diffuse = glm::vec4(0.1, 0.1, 0.1, 1.0);
-			cristal.specular = glm::vec4(0.1, 0.1, 0.1, 1.0);
-			cristal.transparency = 0.5f;
-			fresnelShader.setVec4("MaterialAmbientColor", cristal.ambient);
-			fresnelShader.setVec4("MaterialDiffuseColor", cristal.diffuse);
-			fresnelShader.setVec4("MaterialSpecularColor", cristal.specular);
+			cristal.transparency = 0.3f;
 			fresnelShader.setFloat("transparency", cristal.transparency);
-
 			cristales.Draw(fresnelShader);
+			
+			// Metales
+			Material metal;
+			// Propiedades del material
+			metal.transparency = 1.0f;
+			fresnelShader.setFloat("transparency", metal.transparency);
+			
+			metales.Draw(fresnelShader);
 
 		}
 
@@ -344,11 +342,15 @@ void processInput(GLFWwindow* window)
 
 	if (glfwGetKey(window, GLFW_KEY_I) == GLFW_PRESS)
 	{
-		modelRotation += 0.1;
+		rotacionPuertas -= 0.1;
+		if (rotacionPuertas < -170.0f)
+			rotacionPuertas = -170.0f;
 	}
 	if (glfwGetKey(window, GLFW_KEY_K) == GLFW_PRESS)
 	{
-		modelRotation -= 0.1;
+		rotacionPuertas += 0.1;
+		if (rotacionPuertas > 0.0f)
+			rotacionPuertas = 0.0f;
 	}
 }
 
