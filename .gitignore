@@ -16,6 +16,7 @@
 *.shm
 *.db-wal
 *.db-shm
+*.blend1
 */x64/*
 */Debug/*
 */Release/*
