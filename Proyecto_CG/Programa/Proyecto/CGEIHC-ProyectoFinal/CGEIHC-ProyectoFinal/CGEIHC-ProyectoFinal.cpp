@@ -343,8 +343,8 @@ void processInput(GLFWwindow* window)
 	if (glfwGetKey(window, GLFW_KEY_I) == GLFW_PRESS)
 	{
 		rotacionPuertas -= 0.1;
-		if (rotacionPuertas < -170.0f)
-			rotacionPuertas = -170.0f;
+		if (rotacionPuertas < -100.0f)
+			rotacionPuertas = -100.0f;
 	}
 	if (glfwGetKey(window, GLFW_KEY_K) == GLFW_PRESS)
 	{
