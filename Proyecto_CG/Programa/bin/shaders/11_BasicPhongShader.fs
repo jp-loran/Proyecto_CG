@@ -38,10 +38,18 @@ void main()
     vec3 E = normalize(EyeDirection_cameraspace);
     vec4 ex_color = vec4(0.0);
    
-    vec4 LightColor[2] = {LightColor_0,LightColor_1};
-    vec4 LightPower[2] ={LightPower_0,LightPower_1};
-    int  alphaIndex[2] = {alphaIndex_0,alphaIndex_1};
-    float distance[2] = {distance_0,distance_1};
+    vec4 LightColor[2];
+    LightColor[0]=LightColor_0;
+    LightColor[1]=LightColor_1;
+    vec4 LightPower[2];
+    LightPower[0]=LightPower_0;
+    LightPower[1]=LightPower_1;
+    int  alphaIndex[2];
+    alphaIndex[0]=alphaIndex_0;
+    alphaIndex[1]=alphaIndex_1;
+    float distance[2];
+    distance[0]=distance_0;
+    distance[1]=distance_1;
 
     for(int i=0; i < num_luces ; i++){
 
