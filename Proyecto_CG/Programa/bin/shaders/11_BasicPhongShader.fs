@@ -1,18 +1,27 @@
 #version 330 core
+
+#define num_luces 2
+
 out vec4 FragColor;
 
 in vec2 TexCoords;
 in vec3 ex_N; 
 
 in vec3 EyeDirection_cameraspace;
-in vec3 LightDirection_cameraspace;
+in vec3 LightDirection_cameraspace[num_luces];
 in vec3 Normal_cameraspace;
 
 uniform sampler2D texture_diffuse1;
-uniform vec4 LightColor;
-uniform vec4 LightPower;
-uniform int  alphaIndex;
-uniform float distance;
+
+// Propiedades de la luz
+uniform vec4 LightColor_0;
+uniform vec4 LightPower_0;
+uniform int  alphaIndex_0;
+uniform float distance_0;
+uniform vec4 LightColor_1;
+uniform vec4 LightPower_1;
+uniform int  alphaIndex_1;
+uniform float distance_1;
 
 uniform vec4 MaterialAmbientColor;
 uniform vec4 MaterialDiffuseColor;
@@ -21,26 +30,32 @@ uniform float transparency;
 
 void main()
 {    
-
-    // Cálculo de componente difusa
-    vec3 n = normalize( Normal_cameraspace );
-    vec3 l = normalize( LightDirection_cameraspace );
-
+    // textura
     vec4 texel = texture(texture_diffuse1, TexCoords);
-    
-    float cosTheta = clamp( dot( n,l ), 0,1 );
 
-    // Cálculo de componente difusa
     vec4 MaterialAmbColor = MaterialAmbientColor * MaterialDiffuseColor;
-
-    // Cálculo de componente especular
+    vec3 n = normalize( Normal_cameraspace );
     vec3 E = normalize(EyeDirection_cameraspace);
-    vec3 R = reflect(-l,n);
-    float cosAlpha = clamp( dot( E,R ), 0,1 );
+    vec4 ex_color = vec4(0.0);
+   
+    vec4 LightColor[2] = {LightColor_0,LightColor_1};
+    vec4 LightPower[2] ={LightPower_0,LightPower_1};
+    int  alphaIndex[2] = {alphaIndex_0,alphaIndex_1};
+    float distance[2] = {distance_0,distance_1};
 
-    vec4 ex_color = MaterialAmbColor +
-                    MaterialDiffuseColor * LightColor * LightPower * cosTheta / (distance*distance) +
-                    MaterialSpecularColor * LightColor * LightPower * pow(cosAlpha,alphaIndex) / (distance*distance);
+    for(int i=0; i < num_luces ; i++){
+
+        vec3 l = normalize( LightDirection_cameraspace[i] );
+        float cosTheta = clamp( dot( n,l ), 0,1 );
+        vec3 R = reflect(-l,n);
+        float cosAlpha = clamp( dot( E,R ), 0,1 );
+
+        ex_color += MaterialAmbColor +
+                    MaterialDiffuseColor * LightColor[i] * LightPower[i] * cosTheta / (distance[i]*distance[i]) +
+                    MaterialSpecularColor * LightColor[i] * LightPower[i] * pow(cosAlpha,alphaIndex[i]) / (distance[i]*distance[i]);
+
+    }
+
     ex_color.a = transparency;
 
     FragColor = texel * ex_color;

@@ -57,9 +57,8 @@ float elapsedTime = 0.0f;
 float rotacionPuertas = 0.0f;
 
 // Fuentes de luz
-Light sun;
-Light comedor;
-
+Light sun = Light(glm::vec3(0.0f,100.0f,0.0f), glm::vec3(0.0f,-1.0f,0.0f), glm::vec4(1.0f,1.0f,1.0f,1.0f), glm::vec4(100.0f,100.0f,100.0f,100.0f),10,20.f);
+Light casa = Light(glm::vec3(-11.81f,3.485f,2.787f), glm::vec3(0.0f, -1.0f, 0.0f), glm::vec4(1.0f, 1.0f, 1.0f, 1.0f), glm::vec4(50.0f, 50.0f, 50.0f, 50.0f), 10, 10.f);
 
 // Entrada a función principal
 int main()
@@ -195,15 +194,23 @@ int main()
 			model = glm::scale(model, glm::vec3(1.0f, 1.0f, 1.0f));	// it's a bit too big for our scene, so scale it down
 			basicPhongShader.setMat4("model", model);
 
-			// Propiedades de la luz
+			// Propiedades de las fuentes de luz
 
-			basicPhongShader.setVec3("lightPosition", sun.Position);
-			basicPhongShader.setVec3("lightDirection", sun.Direction);
+			basicPhongShader.setVec3("lightPosition_0", sun.Position);
+			basicPhongShader.setVec3("lightDirection_0", sun.Direction);
 
-			basicPhongShader.setVec4("LightColor", sun.Color);
-			basicPhongShader.setVec4("LightPower", sun.Power);
-			basicPhongShader.setInt("alphaIndex", sun.alphaIndex);
-			basicPhongShader.setFloat("distance", sun.distance);
+			basicPhongShader.setVec4("LightColor_0", sun.Color);
+			basicPhongShader.setVec4("LightPower_0", sun.Power);
+			basicPhongShader.setInt("alphaIndex_0", sun.alphaIndex);
+			basicPhongShader.setFloat("distance_0", sun.distance);
+
+			basicPhongShader.setVec3("lightPosition_1", casa.Position);
+			basicPhongShader.setVec3("lightDirection_1", casa.Direction);
+
+			basicPhongShader.setVec4("LightColor_1", casa.Color);
+			basicPhongShader.setVec4("LightPower_1", casa.Power);
+			basicPhongShader.setInt("alphaIndex_1", casa.alphaIndex);
+			basicPhongShader.setFloat("distance_1", casa.distance);
 
 			basicPhongShader.setVec3("eye", camera.Position);
 
@@ -350,6 +357,16 @@ void processInput(GLFWwindow* window)
 		rotacionPuertas += 0.1;
 		if (rotacionPuertas > 0.0f)
 			rotacionPuertas = 0.0f;
+	}
+	if (glfwGetKey(window, GLFW_KEY_P) == GLFW_PRESS)
+	{
+		casa.Power = casa.Power + glm::vec4(0.5f, 0.5f, 0.5f, 0.5f);
+	}
+	if (glfwGetKey(window, GLFW_KEY_L) == GLFW_PRESS)
+	{
+		casa.Power = casa.Power - glm::vec4(0.5f, 0.5f, 0.5f, 0.5f);
+		if(casa.Power.w < 0)
+			casa.Power = glm::vec4(0.0f, 0.0f, 0.0f, 0.0f);
 	}
 }
 
