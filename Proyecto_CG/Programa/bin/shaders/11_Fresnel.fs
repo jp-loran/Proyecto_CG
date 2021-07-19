@@ -8,7 +8,7 @@ in vec3 EyeDirection_cameraspace;
 
 out vec4 FragColor;
 
-uniform sampler2D tex;
+//uniform sampler2D tex;
 uniform vec3 lightDir;
 
 uniform mat4 model;

@@ -104,19 +104,18 @@ int main()
 
 	// Carga la información del modelo
 		// Estaticos
+	Model cubemap("models/cubemap.fbx");
 	Model brillosos("models/brillosos.fbx");
 	Model opacos("models/opacos.fbx");
 	Model cristales("models/cristales.fbx");
 	Model metales("models/metales.fbx");
 
-	// Materiales en movimiento
-	
+	// Materiales con transformaciones geometricas
 	Model puertaPrincipal("models/PuertaPrincipal.fbx");
 
-	Model donuts("models/materials/donuts.fbx");
-	Model sphere("models/materials/sphere.fbx");
+	//Model donuts("models/materials/donuts.fbx");
+	//Model sphere("models/materials/sphere.fbx");
 	//Model monkey("models/materials/monkey.fbx");
-	Model cubemap("models/cubemap.fbx");
 
 	// Cubemap
 	vector<std::string> faces
