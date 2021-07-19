@@ -112,6 +112,8 @@ int main()
 	// Materiales con transformaciones geometricas
 	Model puertaPrincipal("models/PuertaPrincipal.fbx");
 	Model puertasBanios_opacos("models/PuertasBanios_opacos.fbx");
+	Model puertaCuartoA_opacos("models/PuertaCuartoA_opacos.fbx");
+	Model puertaCuartoB_opacos("models/PuertaCuartoB_opacos.fbx");
 
 	//Model donuts("models/materials/donuts.fbx");
 	//Model sphere("models/materials/sphere.fbx");
@@ -262,10 +264,26 @@ int main()
 			model = glm::translate(model, glm::vec3(-6.542f, -2.211f, 0.2994f));
 			model = glm::rotate(model, glm::radians(-rotacionPuertas), glm::vec3(0.0f, 0.0f, 1.0f));
 			basicPhongShader.setMat4("model", model);
+			puertasBanios_opacos.Draw(basicPhongShader);
 			model = glm::rotate(model, glm::radians(rotacionPuertas), glm::vec3(0.0f, 0.0f, 1.0f));
 			model = glm::translate(model, glm::vec3(6.542f, 2.211f, -0.2994f));
 
-			puertasBanios_opacos.Draw(basicPhongShader);
+			// Puerta del Cuarto A
+			model = glm::translate(model, glm::vec3(-7.599f, 0.2697f, 3.329f));
+			model = glm::rotate(model, glm::radians(-rotacionPuertas), glm::vec3(0.0f, 0.0f, 1.0f));
+			basicPhongShader.setMat4("model", model);
+			puertaCuartoA_opacos.Draw(basicPhongShader);
+			model = glm::rotate(model, glm::radians(rotacionPuertas), glm::vec3(0.0f, 0.0f, 1.0f));
+			model = glm::translate(model, glm::vec3(7.599f, -0.2697f, -3.329f));
+
+			// Puerta del Cuarto B
+			model = glm::translate(model, glm::vec3(-10.29f, 0.2698f, 3.329f));
+			model = glm::rotate(model, glm::radians(-rotacionPuertas), glm::vec3(0.0f, 0.0f, 1.0f));
+			basicPhongShader.setMat4("model", model);
+			puertaCuartoB_opacos.Draw(basicPhongShader);
+			model = glm::rotate(model, glm::radians(rotacionPuertas), glm::vec3(0.0f, 0.0f, 1.0f));
+			model = glm::translate(model, glm::vec3(10.29f, -0.2698f, -3.329f));
+
 		}
 
 		glUseProgram(0);
