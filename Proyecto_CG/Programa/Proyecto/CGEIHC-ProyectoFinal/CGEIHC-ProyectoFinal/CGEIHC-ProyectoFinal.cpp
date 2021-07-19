@@ -257,7 +257,7 @@ int main()
 		}
 
 		glUseProgram(0);
-
+		/*
 		{
 			// Activamos el shader estático
 			fresnelShader.use();
@@ -302,6 +302,7 @@ int main()
 		}
 
 		glUseProgram(0);
+		*/
 
 		// glfw: swap buffers 
 		glfwSwapBuffers(window);
@@ -332,18 +333,26 @@ void processInput(GLFWwindow* window)
 		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 	if (glfwGetKey(window, GLFW_KEY_B) == GLFW_PRESS)
 		glPolygonMode(GL_FRONT_AND_BACK, GL_POINT);
-
+	if (glfwGetKey(window,GLFW_KEY_SPACE)==GLFW_PRESS)
+		camera.ProcessKeyboard(UP, deltaTime);
+	if (glfwGetKey(window, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS)
+		camera.ProcessKeyboard(DOWN, deltaTime);
 	// Character movement
 	if (glfwGetKey(window, GLFW_KEY_UP) == GLFW_PRESS) {
-
+		firstMouse = true;
+		camera.ProcessMouseMovement(0,3);
 	}
 	if (glfwGetKey(window, GLFW_KEY_DOWN) == GLFW_PRESS) {
+		firstMouse = true;
+		camera.ProcessMouseMovement(0,-3);
 	}
 	if (glfwGetKey(window, GLFW_KEY_LEFT) == GLFW_PRESS) {
-
+		firstMouse = true;
+		camera.ProcessMouseMovement(-3,0);
 	}
 	if (glfwGetKey(window, GLFW_KEY_RIGHT) == GLFW_PRESS) {
-
+		firstMouse = true;
+		camera.ProcessMouseMovement(3,0);
 	}
 
 	if (glfwGetKey(window, GLFW_KEY_I) == GLFW_PRESS)
@@ -392,7 +401,7 @@ void mouse_callback(GLFWwindow* window, double xpos, double ypos)
 
 	lastX = (float)xpos;
 	lastY = (float)ypos;
-
+	//std::cout <<"X offset: " << xoffset <<"Y offset: " << yoffset<<std::endl;
 	camera.ProcessMouseMovement(xoffset, yoffset);
 }
 

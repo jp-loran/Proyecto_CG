@@ -1,0 +1,27 @@
+Escenario
+*************************************
+M - Cambia modo de poligonos
+N - Cambia modo de poligonos
+B - Cambia modo de poligonos
+
+
+Movimiento de camara
+**************************************
+W - movimiento de camara hacia adelante
+S - movimiento de camara hacia atras
+A - movimiento de camara a la izquierda
+D - movimiento de camara a la derecha
+barra de espacio - movimiento de camara hacia arriba
+Shift izquiedo - movimiento de camara hacia abajo
+Flecha arriba - rota camara hacia arriba
+Flecha abajo - rota camara hacia abajo
+Flecha izquierda - rota camara hacia izquierda
+Flecha derecha - rota camara hacia derecha
+
+
+Interacciones
+*********************************
+P - aumenta la intensidad de las luces
+L - disminuye la intensidad de las luces
+
+
