@@ -111,6 +111,7 @@ int main()
 
 	// Materiales con transformaciones geometricas
 	Model puertaPrincipal("models/PuertaPrincipal.fbx");
+	Model puertasBanios_opacos("models/PuertasBanios_opacos.fbx");
 
 	//Model donuts("models/materials/donuts.fbx");
 	//Model sphere("models/materials/sphere.fbx");
@@ -243,17 +244,28 @@ int main()
 			opacos.Draw(basicPhongShader);
 
 			// Puertas
-			model = glm::translate(model, glm::vec3(-6.0822f, -0.359038f, 0.435927f));
-			model = glm::rotate(model, glm::radians(rotacionPuertas), glm::vec3(0.0f, 0.0f, 1.0f));
-			basicPhongShader.setMat4("model", model);
-
+			// Phong de material brilloso
 			basicPhongShader.setVec4("MaterialAmbientColor", brilloso.ambient);
 			basicPhongShader.setVec4("MaterialDiffuseColor", brilloso.diffuse);
 			basicPhongShader.setVec4("MaterialSpecularColor", brilloso.specular);
 			basicPhongShader.setFloat("transparency", brilloso.transparency);
-
+			
+			// Puerta principal
+			model = glm::translate(model, glm::vec3(-6.0822f, -0.359038f, 0.435927f));
+			model = glm::rotate(model, glm::radians(rotacionPuertas), glm::vec3(0.0f, 0.0f, 1.0f));
+			basicPhongShader.setMat4("model", model);
 			puertaPrincipal.Draw(basicPhongShader);
+			model = glm::rotate(model, glm::radians(-rotacionPuertas), glm::vec3(0.0f, 0.0f, 1.0f));
+			model = glm::translate(model, glm::vec3(6.0822f, 0.359038f, -0.435927f));
 
+			// Puerta de los banios
+			model = glm::translate(model, glm::vec3(-6.542f, -2.211f, 0.2994f));
+			model = glm::rotate(model, glm::radians(-rotacionPuertas), glm::vec3(0.0f, 0.0f, 1.0f));
+			basicPhongShader.setMat4("model", model);
+			model = glm::rotate(model, glm::radians(rotacionPuertas), glm::vec3(0.0f, 0.0f, 1.0f));
+			model = glm::translate(model, glm::vec3(6.542f, 2.211f, -0.2994f));
+
+			puertasBanios_opacos.Draw(basicPhongShader);
 		}
 
 		glUseProgram(0);
