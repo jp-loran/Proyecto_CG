@@ -55,6 +55,7 @@ float elapsedTime = 0.0f;
 // Variables para la transformacion
 // geometrica de objetos
 float rotacionPuertas = 0.0f;
+float traslacionVentanas = 0.0f;
 
 // Fuentes de luz
 Light sun = Light(glm::vec3(0.0f,100.0f,0.0f), glm::vec3(0.0f,-1.0f,0.0f), glm::vec4(1.0f,1.0f,1.0f,1.0f), glm::vec4(100.0f,100.0f,100.0f,100.0f),10,20.f);
@@ -114,6 +115,13 @@ int main()
 	Model puertasBanios_opacos("models/PuertasBanios_opacos.fbx");
 	Model puertaCuartoA_opacos("models/PuertaCuartoA_opacos.fbx");
 	Model puertaCuartoB_opacos("models/PuertaCuartoB_opacos.fbx");
+	Model puertaPrincipal_metales("models/PuertaPrincipal_metales.fbx");
+	Model puertasBanios_metales("models/PuertasBanios_metales.fbx");
+	Model puertaCuartoA_metales("models/PuertaCuartoA_metales.fbx");
+	Model puertaCuartoB_metales("models/PuertaCuartoB_metales.fbx");
+	Model puertaPrincipal_cristales("models/PuertaPrincipal_cristales.fbx");
+	Model ventanasMovibles_brillosos("models/ventanasMovibles_brillosos.fbx");
+	Model ventanasMovibles_cristales("models/ventanasMovibles_cristales.fbx");
 
 	//Model donuts("models/materials/donuts.fbx");
 	//Model sphere("models/materials/sphere.fbx");
@@ -284,10 +292,16 @@ int main()
 			model = glm::rotate(model, glm::radians(rotacionPuertas), glm::vec3(0.0f, 0.0f, 1.0f));
 			model = glm::translate(model, glm::vec3(10.29f, -0.2698f, -3.329f));
 
+			// Ventanas movibles 
+			model = glm::translate(model, glm::vec3(0.0f, traslacionVentanas, 0.0f));
+			basicPhongShader.setMat4("model", model);
+			ventanasMovibles_brillosos.Draw(basicPhongShader);
+			model = glm::translate(model, glm::vec3(0.0f, -traslacionVentanas, 0.0f));
+
 		}
 
 		glUseProgram(0);
-		/*
+		
 		{
 			// Activamos el shader estático
 			fresnelShader.use();
@@ -329,10 +343,62 @@ int main()
 			
 			metales.Draw(fresnelShader);
 
+
+			// Materiales de fresnel con transformaciones geometricas
+
+			// Metales
+			// Puerta principal
+			model = glm::translate(model, glm::vec3(-6.0822f, -0.359038f, 0.435927f));
+			model = glm::rotate(model, glm::radians(rotacionPuertas), glm::vec3(0.0f, 0.0f, 1.0f));
+			fresnelShader.setMat4("model", model);
+			puertaPrincipal_metales.Draw(fresnelShader);
+			model = glm::rotate(model, glm::radians(-rotacionPuertas), glm::vec3(0.0f, 0.0f, 1.0f));
+			model = glm::translate(model, glm::vec3(6.0822f, 0.359038f, -0.435927f));
+
+			// Puerta de los banios
+			model = glm::translate(model, glm::vec3(-6.542f, -2.211f, 0.2994f));
+			model = glm::rotate(model, glm::radians(-rotacionPuertas), glm::vec3(0.0f, 0.0f, 1.0f));
+			fresnelShader.setMat4("model", model);
+			puertasBanios_metales.Draw(fresnelShader);
+			model = glm::rotate(model, glm::radians(rotacionPuertas), glm::vec3(0.0f, 0.0f, 1.0f));
+			model = glm::translate(model, glm::vec3(6.542f, 2.211f, -0.2994f));
+
+			// Puerta del Cuarto A
+			model = glm::translate(model, glm::vec3(-7.599f, 0.2697f, 3.329f));
+			model = glm::rotate(model, glm::radians(-rotacionPuertas), glm::vec3(0.0f, 0.0f, 1.0f));
+			fresnelShader.setMat4("model", model);
+			puertaCuartoA_metales.Draw(fresnelShader);
+			model = glm::rotate(model, glm::radians(rotacionPuertas), glm::vec3(0.0f, 0.0f, 1.0f));
+			model = glm::translate(model, glm::vec3(7.599f, -0.2697f, -3.329f));
+
+			// Puerta del Cuarto B
+			model = glm::translate(model, glm::vec3(-10.29f, 0.2698f, 3.329f));
+			model = glm::rotate(model, glm::radians(-rotacionPuertas), glm::vec3(0.0f, 0.0f, 1.0f));
+			fresnelShader.setMat4("model", model);
+			puertaCuartoB_metales.Draw(fresnelShader);
+			model = glm::rotate(model, glm::radians(rotacionPuertas), glm::vec3(0.0f, 0.0f, 1.0f));
+			model = glm::translate(model, glm::vec3(10.29f, -0.2698f, -3.329f));
+
+			// Cristales
+			fresnelShader.setFloat("transparency", cristal.transparency);
+
+			// Puerta Principal
+			model = glm::translate(model, glm::vec3(-6.0822f, -0.359038f, 0.435927f));
+			model = glm::rotate(model, glm::radians(rotacionPuertas), glm::vec3(0.0f, 0.0f, 1.0f));
+			fresnelShader.setMat4("model", model);
+			puertaPrincipal_cristales.Draw(fresnelShader);
+			model = glm::rotate(model, glm::radians(-rotacionPuertas), glm::vec3(0.0f, 0.0f, 1.0f));
+			model = glm::translate(model, glm::vec3(6.0822f, 0.359038f, -0.435927f));
+
+			// Ventanas movibles 
+			model = glm::translate(model, glm::vec3(0.0f, traslacionVentanas, 0.0f));
+			fresnelShader.setMat4("model", model);
+			ventanasMovibles_cristales.Draw(fresnelShader);
+			model = glm::translate(model, glm::vec3(0.0f, -traslacionVentanas, 0.0f));
 		}
 
 		glUseProgram(0);
-		*/
+		
 
 		// glfw: swap buffers 
 		glfwSwapBuffers(window);
@@ -370,19 +436,19 @@ void processInput(GLFWwindow* window)
 	// Character movement
 	if (glfwGetKey(window, GLFW_KEY_UP) == GLFW_PRESS) {
 		firstMouse = true;
-		camera.ProcessMouseMovement(0,3);
+		camera.ProcessMouseMovement(0,1);
 	}
 	if (glfwGetKey(window, GLFW_KEY_DOWN) == GLFW_PRESS) {
 		firstMouse = true;
-		camera.ProcessMouseMovement(0,-3);
+		camera.ProcessMouseMovement(0,-1);
 	}
 	if (glfwGetKey(window, GLFW_KEY_LEFT) == GLFW_PRESS) {
 		firstMouse = true;
-		camera.ProcessMouseMovement(-3,0);
+		camera.ProcessMouseMovement(-1,0);
 	}
 	if (glfwGetKey(window, GLFW_KEY_RIGHT) == GLFW_PRESS) {
 		firstMouse = true;
-		camera.ProcessMouseMovement(3,0);
+		camera.ProcessMouseMovement(1,0);
 	}
 
 	if (glfwGetKey(window, GLFW_KEY_I) == GLFW_PRESS)
@@ -399,9 +465,21 @@ void processInput(GLFWwindow* window)
 	}
 	if (glfwGetKey(window, GLFW_KEY_P) == GLFW_PRESS)
 	{
-		casa.Power = casa.Power + glm::vec4(0.5f, 0.5f, 0.5f, 0.5f);
+		traslacionVentanas -= 0.01;
+		if (traslacionVentanas < -0.55f)
+			traslacionVentanas = -0.55f;
 	}
 	if (glfwGetKey(window, GLFW_KEY_L) == GLFW_PRESS)
+	{
+		traslacionVentanas += 0.01;
+		if (traslacionVentanas > 0.665f)
+			traslacionVentanas = 0.665f;
+	}
+	if (glfwGetKey(window, GLFW_KEY_X) == GLFW_PRESS)
+	{
+		casa.Power = casa.Power + glm::vec4(0.5f, 0.5f, 0.5f, 0.5f);
+	}
+	if (glfwGetKey(window, GLFW_KEY_Z) == GLFW_PRESS)
 	{
 		casa.Power = casa.Power - glm::vec4(0.5f, 0.5f, 0.5f, 0.5f);
 		if(casa.Power.w < 0)

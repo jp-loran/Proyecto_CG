@@ -23,5 +23,6 @@ Interacciones
 *********************************
 P - aumenta la intensidad de las luces
 L - disminuye la intensidad de las luces
-
+I - Abre todas las puertas
+K - Cierra todas las puertas
 
