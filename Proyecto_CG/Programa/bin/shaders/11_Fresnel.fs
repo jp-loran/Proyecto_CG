@@ -1,5 +1,5 @@
 #version 330 core
-
+#extension GL_NV_shadow_samplers_cube : enable
 in vec2 TexCoords;
 in vec3 ex_N;
 
@@ -28,6 +28,7 @@ in float vReflectionFactor;
 uniform samplerCube cubetex;
 uniform sampler2D texture_diffuse1;
 uniform float transparency;
+uniform vec4 reflectColor;
 
 void main(void)
 {
@@ -40,9 +41,10 @@ void main(void)
 	refractedColor.g = textureCube( cubetex, vec3( -vRefract[1].x, vRefract[1].yz ) ).g;
 	refractedColor.b = textureCube( cubetex, vec3( -vRefract[2].x, vRefract[2].yz ) ).b;
 
-	vec4 texel = texture(texture_diffuse1, TexCoords);
+	//vec4 texel = texture(texture_diffuse1, TexCoords);
 
 	// sample just fresnel
-	FragColor = texel * mix( refractedColor, reflectedColor, clamp( vReflectionFactor, 0.0, 1.0 ) );
+	FragColor = mix( refractedColor, reflectedColor, clamp( vReflectionFactor, 0.0, 1.0 ) )*reflectColor;
+	//FragColor = vec4( 1.0f );
 	FragColor.a = transparency;
 }
