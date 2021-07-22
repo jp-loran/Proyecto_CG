@@ -99,14 +99,20 @@ int main()
 	glEnable(GL_DEPTH_TEST);
 
 	// Compilación y enlace de shaders
+	Shader ourShader("shaders/10_vertex_skinning-IT.vs", "shaders/10_fragment_skinning-IT.fs");
 	Shader cubemapShader("shaders/10_vertex_cubemap.vs", "shaders/10_fragment_cubemap.fs");
 	Shader basicPhongShader("shaders/11_BasicPhongShader.vs", "shaders/11_BasicPhongShader.fs"); // opacos y plásticos, cerámicas
 	Shader fresnelShader("shaders/11_Fresnel.vs", "shaders/11_Fresnel.fs"); // metal y semitraslúcidos
+
+	// Máximo número de huesos: 100
+#define MAX_RIGGING_BONES 100
+	ourShader.setBonesIDs(MAX_RIGGING_BONES);
 
 	// Carga la información del modelo
 		// Estaticos
 	Model cubemap("models/cubemap.fbx");
 	Model brillosos("models/brillosos.fbx");
+	Model brillosos_blancos("models/brillosos_blancos.fbx");
 	Model opacos("models/opacos.fbx");
 	Model cristales("models/cristales.fbx");
 	Model metales("models/metales.fbx");
@@ -255,6 +261,10 @@ int main()
 			basicPhongShader.setFloat("transparency", brilloso.transparency);
 
 			brillosos.Draw(basicPhongShader);
+
+			// Brillosos blancos
+
+			brillosos_blancos.Draw(basicPhongShader);
 
 			// MATERIALES OPACOS
 			Material opaco;
