@@ -56,6 +56,7 @@ float elapsedTime = 0.0f;
 // geometrica de objetos
 float rotacionPuertas = 0.0f;
 float traslacionVentanas = 0.0f;
+float rotacionTapaInodoro = 0.0f;
 
 // Fuentes de luz
 Light sun = Light(glm::vec3(0.0f,100.0f,0.0f), glm::vec3(0.0f,-1.0f,0.0f), glm::vec4(1.0f,1.0f,1.0f,1.0f), glm::vec4(100.0f,100.0f,100.0f,100.0f),1,20.f);
@@ -123,6 +124,8 @@ int main()
 	Model puertaPrincipal_cristales("models/PuertaPrincipal_cristales.fbx");
 	Model ventanasMovibles_brillosos("models/ventanasMovibles_brillosos.fbx");
 	Model ventanasMovibles_cristales("models/ventanasMovibles_cristales.fbx");
+	Model pb_inodoro_tapa("models/pb_inodoro_tapa.fbx");
+	Model p2_inodoro_tapa("models/p2_inodoro_tapa.fbx");
 
 	//Model donuts("models/materials/donuts.fbx");
 	//Model sphere("models/materials/sphere.fbx");
@@ -278,40 +281,55 @@ int main()
 			model = glm::rotate(model, glm::radians(rotacionPuertas), glm::vec3(0.0f, 0.0f, 1.0f));
 			basicPhongShader.setMat4("model", model);
 			puertaPrincipal.Draw(basicPhongShader);
-			model = glm::rotate(model, glm::radians(-rotacionPuertas), glm::vec3(0.0f, 0.0f, 1.0f));
-			model = glm::translate(model, glm::vec3(6.0822f, 0.359038f, -0.435927f));
+			model = glm::mat4(1.0f);
+			model = glm::rotate(model, glm::radians(-90.0f), glm::vec3(1.0f, 0.0f, 0.0f));
 
 			// Puerta de los banios
 			model = glm::translate(model, glm::vec3(-6.542f, -2.211f, 0.2994f));
 			model = glm::rotate(model, glm::radians(-rotacionPuertas), glm::vec3(0.0f, 0.0f, 1.0f));
 			basicPhongShader.setMat4("model", model);
 			puertasBanios_opacos.Draw(basicPhongShader);
-			model = glm::rotate(model, glm::radians(rotacionPuertas), glm::vec3(0.0f, 0.0f, 1.0f));
-			model = glm::translate(model, glm::vec3(6.542f, 2.211f, -0.2994f));
+			model = glm::mat4(1.0f);
+			model = glm::rotate(model, glm::radians(-90.0f), glm::vec3(1.0f, 0.0f, 0.0f));
 
 			// Puerta del Cuarto A
 			model = glm::translate(model, glm::vec3(-7.599f, 0.2697f, 3.329f));
 			model = glm::rotate(model, glm::radians(-rotacionPuertas), glm::vec3(0.0f, 0.0f, 1.0f));
 			basicPhongShader.setMat4("model", model);
 			puertaCuartoA_opacos.Draw(basicPhongShader);
-			model = glm::rotate(model, glm::radians(rotacionPuertas), glm::vec3(0.0f, 0.0f, 1.0f));
-			model = glm::translate(model, glm::vec3(7.599f, -0.2697f, -3.329f));
+			model = glm::mat4(1.0f);
+			model = glm::rotate(model, glm::radians(-90.0f), glm::vec3(1.0f, 0.0f, 0.0f));
 
 			// Puerta del Cuarto B
 			model = glm::translate(model, glm::vec3(-10.29f, 0.2698f, 3.329f));
 			model = glm::rotate(model, glm::radians(-rotacionPuertas), glm::vec3(0.0f, 0.0f, 1.0f));
 			basicPhongShader.setMat4("model", model);
 			puertaCuartoB_opacos.Draw(basicPhongShader);
-			model = glm::rotate(model, glm::radians(rotacionPuertas), glm::vec3(0.0f, 0.0f, 1.0f));
-			model = glm::translate(model, glm::vec3(10.29f, -0.2698f, -3.329f));
+			model = glm::mat4(1.0f);
+			model = glm::rotate(model, glm::radians(-90.0f), glm::vec3(1.0f, 0.0f, 0.0f));
 
 			// Ventanas movibles 
 			model = glm::translate(model, glm::vec3(0.0f, traslacionVentanas, 0.0f));
 			basicPhongShader.setMat4("model", model);
 			ventanasMovibles_brillosos.Draw(basicPhongShader);
-			model = glm::translate(model, glm::vec3(0.0f, -traslacionVentanas, 0.0f));
+			model = glm::mat4(1.0f);
+			model = glm::rotate(model, glm::radians(-90.0f), glm::vec3(1.0f, 0.0f, 0.0f));
 
-			//temp.Draw(basicPhongShader);
+			// Tapa inodoro PB
+			model = glm::translate(model, glm::vec3(-7.6824, -5.0065, 0.51579));
+			model = glm::rotate(model, glm::radians(-rotacionTapaInodoro), glm::vec3(0.0f, -1.0f, 0.0f));
+			basicPhongShader.setMat4("model", model);
+			pb_inodoro_tapa.Draw(basicPhongShader);
+			model = glm::mat4(1.0f);
+			model = glm::rotate(model, glm::radians(-90.0f), glm::vec3(1.0f, 0.0f, 0.0f));
+
+			// Tapa inodoro P2
+			model = glm::translate(model, glm::vec3(-7.6785, -5.0634, 3.54579));
+			model = glm::rotate(model, glm::radians(-rotacionTapaInodoro), glm::vec3(0.0f, -1.0f, 0.0f));
+			basicPhongShader.setMat4("model", model);
+			pb_inodoro_tapa.Draw(basicPhongShader);
+			model = glm::mat4(1.0f);
+			model = glm::rotate(model, glm::radians(-90.0f), glm::vec3(1.0f, 0.0f, 0.0f));
 		}
 
 		glUseProgram(0);
@@ -480,6 +498,18 @@ void processInput(GLFWwindow* window)
 		rotacionPuertas += 0.1;
 		if (rotacionPuertas > 0.0f)
 			rotacionPuertas = 0.0f;
+	}
+	if (glfwGetKey(window, GLFW_KEY_U) == GLFW_PRESS)
+	{
+		rotacionTapaInodoro -= 0.1;
+		if (rotacionTapaInodoro < -90.0f)
+			rotacionTapaInodoro = -90.0f;
+	}
+	if (glfwGetKey(window, GLFW_KEY_J) == GLFW_PRESS)
+	{
+		rotacionTapaInodoro += 0.1;
+		if (rotacionTapaInodoro > 0.0f)
+			rotacionTapaInodoro = 0.0f;
 	}
 	if (glfwGetKey(window, GLFW_KEY_P) == GLFW_PRESS)
 	{

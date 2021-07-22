@@ -21,8 +21,11 @@ Flecha derecha - rota camara hacia derecha
 
 Interacciones
 *********************************
-P - aumenta la intensidad de las luces
-L - disminuye la intensidad de las luces
+X - aumenta la intensidad de las luces
+Z - disminuye la intensidad de las luces
 I - Abre todas las puertas
 K - Cierra todas las puertas
-
+P - Abre las ventanas
+L - Cierra las ventanas
+U - Abre los inodoros
+J - Cierra los inodoros
