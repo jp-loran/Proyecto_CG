@@ -17,7 +17,7 @@ public:
 	float     transparency;
 
 	Material() {
-		ambient = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f); 
+		ambient = glm::vec4(0.5f, 0.5f, 0.5f, 0.5f); 
 		diffuse = glm::vec4(0.5f, 0.5f, 0.5f, 1.0f);
 		specular = glm::vec4(0.5f, 0.5f, 0.5f, 1.0f); 
 		transparency = 1.0f;
