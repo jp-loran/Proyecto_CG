@@ -112,10 +112,25 @@ int main()
 		// Estaticos
 	Model cubemap("models/cubemap.fbx");
 	Model brillosos("models/brillosos.fbx");
+	Model casa_piso("models/casa_piso.fbx");
 	Model brillosos_blancos("models/brillosos_blancos.fbx");
-	Model opacos("models/opacos.fbx");
+	Model silla_1("models/silla_1.fbx");
+	Model silla_2("models/silla_2.fbx");
+	Model silla_3("models/silla_3.fbx");
+	Model silla_4("models/silla_4.fbx");
+	Model mesa("models/mesa.fbx");
+	Model lowtable("models/lowtable.fbx");
+	Model lavabo("models/lavabo.fbx");
+	Model cama("models/cama.fbx");
+	Model buro("models/buro.fbx");
+	//Model opacos("models/opacos.fbx");
+	Model casa_est("models/casa_estructura.fbx");
 	Model cristales("models/cristales.fbx");
 	Model metales("models/metales.fbx");
+	Model sofa("models/sofa.fbx");
+	Model libros("models/libros.fbx");
+	Model tv("models/tv.fbx");
+	Model ps4("models/ps4.fbx");
 
 	// Materiales con transformaciones geometricas
 	Model puertaPrincipal("models/PuertaPrincipal.fbx");
@@ -259,9 +274,17 @@ int main()
 			basicPhongShader.setVec4("MaterialDiffuseColor", brilloso.diffuse);
 			basicPhongShader.setVec4("MaterialSpecularColor", brilloso.specular);
 			basicPhongShader.setFloat("transparency", brilloso.transparency);
-
-			brillosos.Draw(basicPhongShader);
-
+			casa_piso.Draw(basicPhongShader);
+			//brillosos.Draw(basicPhongShader);
+			silla_1.Draw(basicPhongShader);
+			silla_2.Draw(basicPhongShader);
+			silla_3.Draw(basicPhongShader);
+			silla_4.Draw(basicPhongShader);
+			mesa.Draw(basicPhongShader);
+			lowtable.Draw(basicPhongShader);
+			lavabo.Draw(basicPhongShader);
+			cama.Draw(basicPhongShader);
+			buro.Draw(basicPhongShader);
 			// Brillosos blancos
 
 			brillosos_blancos.Draw(basicPhongShader);
@@ -276,8 +299,12 @@ int main()
 			basicPhongShader.setVec4("MaterialDiffuseColor", opaco.diffuse);
 			basicPhongShader.setVec4("MaterialSpecularColor", opaco.specular);
 			basicPhongShader.setFloat("transparency", opaco.transparency);
-
-			opacos.Draw(basicPhongShader);
+			casa_est.Draw(basicPhongShader);
+			sofa.Draw(basicPhongShader);
+			libros.Draw(basicPhongShader);
+			ps4.Draw(basicPhongShader);
+			tv.Draw(basicPhongShader);
+			//opacos.Draw(basicPhongShader);
 
 			// Puertas
 			// Phong de material brilloso
@@ -378,7 +405,7 @@ int main()
 			fresnelShader.setFloat("transparency", cristal.transparency);
 			fresnelShader.setVec4("reflectColor", cristal.diffuse);
 			cristales.Draw(fresnelShader);
-			//temp.Draw(fresnelShader);
+			
 			// Metales
 			Material metal;
 			// Propiedades del material
