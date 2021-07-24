@@ -75,6 +75,11 @@ int cameraMode = 0;
 float delayCameraMode = 0;
 bool changeCameraMode = true;
 float rotAjuste = 1.0f;
+
+//UFO poss
+glm::vec3 ufoPoss = glm::vec3(0.0f);
+float ufoAngle = 0.0f;
+float ufoRadio = 8.0f;
 // Entrada a función principal
 int main()
 {
@@ -141,6 +146,8 @@ int main()
 	Model cristales("models/cristales.fbx");
 	Model metales("models/metales.fbx");
 	Model coche("models/coche.fbx");
+	Model ufo("models/ufo.fbx");
+	Model beam("models/beam.fbx");
 	//Model sofa("models/sofa.fbx");
 	//Model libros("models/libros.fbx");
 	//Model tv("models/tv.fbx");
@@ -340,6 +347,7 @@ int main()
 			brillosos.Draw(basicPhongShader);
 
 			coche.Draw(basicPhongShader);
+			
 			/*
 			casa_piso.Draw(basicPhongShader);
 			//brillosos.Draw(basicPhongShader);
@@ -484,7 +492,7 @@ int main()
 			fresnelShader.setFloat("transparency", cristal.transparency);
 			fresnelShader.setVec4("reflectColor", cristal.diffuse);
 			cristales.Draw(fresnelShader);
-			
+
 			// Metales
 			Material metal;
 			// Propiedades del material
@@ -492,6 +500,7 @@ int main()
 			fresnelShader.setFloat("transparency", metal.transparency);
 			fresnelShader.setVec4("reflectColor", metal.diffuse);
 			metales.Draw(fresnelShader);
+
 
 
 			// Materiales de fresnel con transformaciones geometricas
@@ -547,10 +556,36 @@ int main()
 			ventanasMovibles_cristales.Draw(fresnelShader);
 			model = glm::mat4(1.0f);
 			model = glm::rotate(model, glm::radians(-90.0f), glm::vec3(1.0f, 0.0f, 0.0f));
+			
+			
+			//UFO
+			model = glm::mat4(1.0f);
+			model = glm::translate(model, glm::vec3(ufoPoss.x, 0,ufoPoss.z ));
+			model = glm::rotate(model, glm::radians(-90.0f), glm::vec3(1.0f, 0.0f, 0.0f));
+			fresnelShader.setMat4("model", model);
+			Material beamMat;
+			beamMat.transparency = 0.4f;
+			beamMat.diffuse = glm::vec4(0.4f, 0.4f, 0.0f, 1.0f);
+			fresnelShader.setFloat("transparency", beamMat.transparency);
+			fresnelShader.setVec4("reflectColor", beamMat.diffuse);
+			beam.Draw(fresnelShader);
+
+			Material ufoMat;
+			ufoMat.transparency = 1.0f;
+			fresnelShader.setFloat("transparency", ufoMat.transparency);
+			fresnelShader.setVec4("reflectColor", ufoMat.diffuse);
+			ufo.Draw(fresnelShader);
+
 		}
 
 		glUseProgram(0);
-		
+		{
+			ufoAngle += 4;
+			if (ufoAngle >= 360)
+				ufoAngle = 0;
+			ufoPoss.x = ufoRadio * glm::cos(glm::radians(ufoAngle));
+			ufoPoss.z = ufoRadio * glm::sin(glm::radians(ufoAngle));
+		}
 
 		// glfw: swap buffers 
 		glfwSwapBuffers(window);
