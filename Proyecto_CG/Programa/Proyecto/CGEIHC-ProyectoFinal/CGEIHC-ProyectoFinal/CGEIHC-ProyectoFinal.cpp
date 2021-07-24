@@ -140,6 +140,7 @@ int main()
 	//Model casa_est("models/casa_estructura.fbx");
 	Model cristales("models/cristales.fbx");
 	Model metales("models/metales.fbx");
+	Model coche("models/coche.fbx");
 	//Model sofa("models/sofa.fbx");
 	//Model libros("models/libros.fbx");
 	//Model tv("models/tv.fbx");
@@ -338,6 +339,7 @@ int main()
 			basicPhongShader.setFloat("transparency", brilloso.transparency);
 			brillosos.Draw(basicPhongShader);
 
+			coche.Draw(basicPhongShader);
 			/*
 			casa_piso.Draw(basicPhongShader);
 			//brillosos.Draw(basicPhongShader);
