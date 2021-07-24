@@ -52,6 +52,8 @@ float deltaTime = 0.0f;
 float lastFrame = 0.0f;
 float elapsedTime = 0.0f;
 
+float tiempoPasadoFiesta;
+
 // Variables para la transformacion
 // geometrica de objetos
 float rotacionPuertas = 0.0f;
@@ -61,6 +63,12 @@ float rotacionTapaInodoro = 0.0f;
 // Fuentes de luz
 Light sun = Light(glm::vec3(0.0f,100.0f,0.0f), glm::vec3(0.0f,-1.0f,0.0f), glm::vec4(1.0f,1.0f,1.0f,1.0f), glm::vec4(100.0f,100.0f,100.0f,100.0f),1,20.f);
 Light casa = Light(glm::vec3(-11.81f, 2.70f, -3.485f), glm::vec3(0.0f, -1.0f, 0.0f), glm::vec4(1.0f, 1.0f, 1.0f, 1.0f), glm::vec4(50.0f, 50.0f, 50.0f, 50.0f), 10, 10.f);
+
+// Color de luz
+glm::vec4 color_casa = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
+bool modoFiesta = false;
+float duracionLuces = 1.0f;
+int colores_fiesta = 0;
 
 //Vectores de posicion y rotacion del personaje
 glm::vec3 positionCharacter(0.0f);
@@ -81,6 +89,7 @@ glm::vec3 ufoPoss = glm::vec3(0.0f);
 float ufoAngle = 0.0f;
 float ufoRadio = 8.0f;
 // Entrada a función principal
+
 int main()
 {
 	// Inicialización de GLFW
@@ -220,6 +229,7 @@ int main()
 		deltaTime = currentFrame - lastFrame;
 		lastFrame = currentFrame;
 		elapsedTime += deltaTime;
+		tiempoPasadoFiesta += deltaTime;
 
 		if (elapsedTime > 1.0f / fps) {
 			animationCount++;
@@ -230,6 +240,36 @@ int main()
 			//character.SetPose((float)animationCount, gBones, animType);
 			character.SetPose((float)animationCount, gBones);
 			elapsedTime = 0.0f;
+		}
+
+		if (modoFiesta) {
+			if (tiempoPasadoFiesta > duracionLuces) {
+				colores_fiesta += 1;
+				colores_fiesta = colores_fiesta % 6;
+				switch (colores_fiesta) {
+				case 0:
+					casa.Color = glm::vec4(1.0f, 0.0f, 0.0f, 1.0f);
+					break;
+				case 1:
+					casa.Color = glm::vec4(1.0f, 1.0f, 0.0f, 1.0f);
+					break;
+				case 2:
+					casa.Color = glm::vec4(0.0f, 1.0f, 0.0f, 1.0f);
+					break;
+				case 3:
+					casa.Color = glm::vec4(0.0f, 1.0f, 1.0f, 1.0f);
+					break;
+				case 4:
+					casa.Color = glm::vec4(0.0f, 0.0f, 1.0f, 1.0f);
+					break;
+				case 5:
+					casa.Color = glm::vec4(1.0f, 0.0f, 1.0f, 1.0f);
+					break;
+				default:
+					casa.Color = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
+				}
+				tiempoPasadoFiesta = 0.0f;
+			}
 		}
 
 		//Espero de 0.5 s para volver a cambiar la camara
@@ -760,6 +800,17 @@ void processInput(GLFWwindow* window)
 		if(casa.Power.w < 0)
 			casa.Power = glm::vec4(0.0f, 0.0f, 0.0f, 0.0f);
 	}
+	
+	if (glfwGetKey(window, GLFW_KEY_Q) == GLFW_PRESS)
+	{
+		modoFiesta = true;
+	}
+	if (glfwGetKey(window, GLFW_KEY_E) == GLFW_PRESS)
+	{
+		modoFiesta = false;
+		casa.Color = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
+	}
+	
 }
 
 // glfw: Actualizamos el puerto de vista si hay cambios del tamaño
