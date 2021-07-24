@@ -1,9 +1,17 @@
 Escenario
-*************************************
+**************************************
 M - Cambia modo de poligonos
 N - Cambia modo de poligonos
 B - Cambia modo de poligonos
 
+Modos de camara
+**************************************
+C - Cambiar modo de camara
+ 
+Modo espectador, permite moverse libremente a traves
+del escenario
+Modo tercerapersona, se posiciona en tercera persona
+con el personaje animado
 
 Movimiento de camara
 **************************************
