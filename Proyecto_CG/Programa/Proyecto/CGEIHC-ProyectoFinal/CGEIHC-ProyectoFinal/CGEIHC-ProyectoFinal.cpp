@@ -125,26 +125,30 @@ int main()
 		// Estaticos
 	Model cubemap("models/cubemap.fbx");
 	Model brillosos("models/brillosos.fbx");
-	Model casa_piso("models/casa_piso.fbx");
+	//Model casa_piso("models/casa_piso.fbx");
 	Model brillosos_blancos("models/brillosos_blancos.fbx");
-	Model silla_1("models/silla_1.fbx");
-	Model silla_2("models/silla_2.fbx");
-	Model silla_3("models/silla_3.fbx");
-	Model silla_4("models/silla_4.fbx");
-	Model mesa("models/mesa.fbx");
-	Model lowtable("models/lowtable.fbx");
-	Model lavabo("models/lavabo.fbx");
-	Model cama("models/cama.fbx");
-	Model buro("models/buro.fbx");
-	//Model opacos("models/opacos.fbx");
-	Model casa_est("models/casa_estructura.fbx");
+	//Model silla_1("models/silla_1.fbx");
+	//Model silla_2("models/silla_2.fbx");
+	//Model silla_3("models/silla_3.fbx");
+	//Model silla_4("models/silla_4.fbx");
+	//Model mesa("models/mesa.fbx");
+	//Model lowtable("models/lowtable.fbx");
+	//Model lavabo("models/lavabo.fbx");
+	//Model cama("models/cama.fbx");
+	//Model buro("models/buro.fbx");
+	Model opacos("models/opacos.fbx");
+	//Model casa_est("models/casa_estructura.fbx");
 	Model cristales("models/cristales.fbx");
 	Model metales("models/metales.fbx");
-	Model sofa("models/sofa.fbx");
-	Model libros("models/libros.fbx");
-	Model tv("models/tv.fbx");
-	Model ps4("models/ps4.fbx");
+	//Model sofa("models/sofa.fbx");
+	//Model libros("models/libros.fbx");
+	//Model tv("models/tv.fbx");
+	//Model ps4("models/ps4.fbx");
+	
+	// Modelos con animacion
 	Model character("models/character.fbx");
+	
+	
 	// Materiales con transformaciones geometricas
 	Model puertaPrincipal("models/PuertaPrincipal.fbx");
 	Model temp("models/cristal_temp.fbx");
@@ -332,6 +336,9 @@ int main()
 			basicPhongShader.setVec4("MaterialDiffuseColor", brilloso.diffuse);
 			basicPhongShader.setVec4("MaterialSpecularColor", brilloso.specular);
 			basicPhongShader.setFloat("transparency", brilloso.transparency);
+			brillosos.Draw(basicPhongShader);
+
+			/*
 			casa_piso.Draw(basicPhongShader);
 			//brillosos.Draw(basicPhongShader);
 			silla_1.Draw(basicPhongShader);
@@ -344,6 +351,11 @@ int main()
 			cama.Draw(basicPhongShader);
 			buro.Draw(basicPhongShader);
 			// Brillosos blancos
+			*/
+
+			basicPhongShader.setVec4("MaterialAmbientColor", glm::vec4(0.6, 0.6, 0.6, 1.0));
+			basicPhongShader.setVec4("MaterialDiffuseColor", glm::vec4(0.5, 0.5, 0.5, 1.0));
+			basicPhongShader.setVec4("MaterialSpecularColor", glm::vec4(0.5, 0.5, 0.5, 1.0));
 
 			brillosos_blancos.Draw(basicPhongShader);
 
@@ -357,12 +369,14 @@ int main()
 			basicPhongShader.setVec4("MaterialDiffuseColor", opaco.diffuse);
 			basicPhongShader.setVec4("MaterialSpecularColor", opaco.specular);
 			basicPhongShader.setFloat("transparency", opaco.transparency);
+			/*
 			casa_est.Draw(basicPhongShader);
 			sofa.Draw(basicPhongShader);
 			libros.Draw(basicPhongShader);
 			ps4.Draw(basicPhongShader);
 			tv.Draw(basicPhongShader);
-			//opacos.Draw(basicPhongShader);
+			*/
+			opacos.Draw(basicPhongShader);
 
 			// Puertas
 			// Phong de material brilloso
@@ -409,6 +423,11 @@ int main()
 			ventanasMovibles_brillosos.Draw(basicPhongShader);
 			model = glm::mat4(1.0f);
 			model = glm::rotate(model, glm::radians(-90.0f), glm::vec3(1.0f, 0.0f, 0.0f));
+
+			// Brillosos blancos
+			basicPhongShader.setVec4("MaterialAmbientColor", glm::vec4(0.6, 0.6, 0.6, 1.0));
+			basicPhongShader.setVec4("MaterialDiffuseColor", glm::vec4(0.5, 0.5, 0.5, 1.0));
+			basicPhongShader.setVec4("MaterialSpecularColor", glm::vec4(0.5, 0.5, 0.5, 1.0));
 
 			// Tapa inodoro PB
 			model = glm::translate(model, glm::vec3(-7.6824, -5.0065, 0.51579));
