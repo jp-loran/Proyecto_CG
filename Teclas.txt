@@ -31,6 +31,8 @@ Interacciones
 *********************************
 X - aumenta la intensidad de las luces
 Z - disminuye la intensidad de las luces
+Q - Empieza el show de luces
+E - Termina el show de luces
 I - Abre todas las puertas
 K - Cierra todas las puertas
 P - Abre las ventanas
