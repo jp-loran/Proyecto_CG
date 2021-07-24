@@ -62,6 +62,19 @@ float rotacionTapaInodoro = 0.0f;
 Light sun = Light(glm::vec3(0.0f,100.0f,0.0f), glm::vec3(0.0f,-1.0f,0.0f), glm::vec4(1.0f,1.0f,1.0f,1.0f), glm::vec4(100.0f,100.0f,100.0f,100.0f),1,20.f);
 Light casa = Light(glm::vec3(-11.81f, 2.70f, -3.485f), glm::vec3(0.0f, -1.0f, 0.0f), glm::vec4(1.0f, 1.0f, 1.0f, 1.0f), glm::vec4(50.0f, 50.0f, 50.0f, 50.0f), 10, 10.f);
 
+//Vectores de posicion y rotacion del personaje
+glm::vec3 positionCharacter(0.0f);
+float rotateCharacter = 0.0f;
+int animType = 0;
+
+//VEctores camara
+glm::vec3 positionCamera = camera.Position;
+float YawCamera=camera.Yaw;
+float PitchCamera=camera.Pitch;
+int cameraMode = 0;
+float delayCameraMode = 0;
+bool changeCameraMode = true;
+float rotAjuste = 1.0f;
 // Entrada a función principal
 int main()
 {
@@ -131,7 +144,7 @@ int main()
 	Model libros("models/libros.fbx");
 	Model tv("models/tv.fbx");
 	Model ps4("models/ps4.fbx");
-
+	Model character("models/character.fbx");
 	// Materiales con transformaciones geometricas
 	Model puertaPrincipal("models/PuertaPrincipal.fbx");
 	Model temp("models/cristal_temp.fbx");
@@ -172,12 +185,20 @@ int main()
 		"models/cubemap.fbm/negz.jpg"
 	};
 	unsigned int cubemapTexture = loadCubemap(faces);
+	//Personaje Animado pose inicial
+	glm::mat4 gBones[MAX_RIGGING_BONES];
+	//character.SetPose(0.0f, gBones, animType);
+	character.SetPose(0.0f, gBones);
+	float fps = (float)character.getFramerate();
+	fps *= 2;
+	int keys = (int)character.getNumFrames();
+	int animationCount = 0;
 
 	// Dibujar en malla de alambre
 	// glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
 	// Definicion de fuentes de luz
-
+	delayCameraMode= (float)glfwGetTime();
 	// Loop de renderizado
 	while (!glfwWindowShouldClose(window))
 	{
@@ -188,6 +209,22 @@ int main()
 		lastFrame = currentFrame;
 		elapsedTime += deltaTime;
 
+		if (elapsedTime > 1.0f / fps) {
+			animationCount++;
+			if (animationCount > keys - 1) {
+				animationCount = 0;
+			}
+			// Configuración de la pose en el instante t
+			//character.SetPose((float)animationCount, gBones, animType);
+			character.SetPose((float)animationCount, gBones);
+			elapsedTime = 0.0f;
+		}
+
+		//Espero de 0.5 s para volver a cambiar la camara
+		if((currentFrame-delayCameraMode)>=0.5f){
+			changeCameraMode = true;
+		}
+		//cout << currentFrame - delayCameraMode << endl;
 		// Procesa la entrada del teclado o mouse
 		processInput(window);
 
@@ -219,7 +256,28 @@ int main()
 		}
 
 		glUseProgram(0);
-		
+		{
+			ourShader.use();
+			glm::mat4 projection = glm::perspective(glm::radians(camera.Zoom), (float)SCR_WIDTH / (float)SCR_HEIGHT, 0.1f, 100.0f);
+			glm::mat4 view = camera.GetViewMatrix();
+			ourShader.setMat4("projection", projection);
+			ourShader.setMat4("view", view);
+			// Aplicamos transformaciones del modelo
+			glm::mat4 model = glm::mat4(1.0f);
+			model = glm::translate(model, positionCharacter); // translate it down so it's at the center of the scene
+			model = glm::rotate(model, glm::radians(rotateCharacter), glm::vec3(0.0f, 1.0f, 0.0f));
+			model = glm::scale(model, glm::vec3(0.01f, 0.01f, 0.01f));	// it's a bit too big for our scene, so scale it down
+
+			ourShader.setMat4("model", model);
+
+			ourShader.setMat4("gBones", MAX_RIGGING_BONES, gBones);
+
+			// Dibujamos el modelo
+			character.Draw(ourShader);
+
+		}
+
+		glUseProgram(0);
 		{
 			// Activamos el shader estático
 			basicPhongShader.use();
@@ -486,42 +544,118 @@ int main()
 // Procesamos entradas del teclado
 void processInput(GLFWwindow* window)
 {
+	//Camera 
 	if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
 		glfwSetWindowShouldClose(window, true);
-	if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
-		camera.ProcessKeyboard(FORWARD, deltaTime);
-	if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
+	if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS) {
+		camera.ProcessKeyboard(FORWARD,deltaTime);
+		if (cameraMode == 1) {
+			float velocity = camera.MovementSpeed * deltaTime;
+			positionCharacter += camera.Front * velocity;
+
+		}
+
+	}
+	if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS) {
 		camera.ProcessKeyboard(BACKWARD, deltaTime);
-	if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
+		if (cameraMode == 1) {
+			float velocity = camera.MovementSpeed * deltaTime;
+			positionCharacter -= camera.Front * velocity;
+
+		}
+
+	}
+	if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS) {
 		camera.ProcessKeyboard(LEFT, deltaTime);
-	if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
+		if (cameraMode == 1) {
+			float velocity = camera.MovementSpeed * deltaTime;
+			positionCharacter -= camera.Right * velocity;
+
+		}
+	
+	}
+	if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS) {
 		camera.ProcessKeyboard(RIGHT, deltaTime);
+		if (cameraMode == 1) {
+			float velocity = camera.MovementSpeed * deltaTime;
+			positionCharacter += camera.Right * velocity;
+
+		}
+
+
+	}
 	if (glfwGetKey(window, GLFW_KEY_M) == GLFW_PRESS)
 		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 	if (glfwGetKey(window, GLFW_KEY_N) == GLFW_PRESS)
 		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 	if (glfwGetKey(window, GLFW_KEY_B) == GLFW_PRESS)
 		glPolygonMode(GL_FRONT_AND_BACK, GL_POINT);
-	if (glfwGetKey(window,GLFW_KEY_SPACE)==GLFW_PRESS)
+	if (glfwGetKey(window,GLFW_KEY_SPACE)==GLFW_PRESS and cameraMode == 0)
 		camera.ProcessKeyboard(UP, deltaTime);
-	if (glfwGetKey(window, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS)
+	if (glfwGetKey(window, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS and cameraMode == 0)
 		camera.ProcessKeyboard(DOWN, deltaTime);
-	// Character movement
-	if (glfwGetKey(window, GLFW_KEY_UP) == GLFW_PRESS) {
-		firstMouse = true;
-		camera.ProcessMouseMovement(0,1);
+	if (glfwGetKey(window, GLFW_KEY_C) == GLFW_PRESS) {
+		if (changeCameraMode == true) {
+			changeCameraMode = false;
+			delayCameraMode = (float)glfwGetTime();
+			if (cameraMode==0) {
+				cameraMode = 1;
+				positionCamera=camera.Position;
+				YawCamera = camera.Yaw;
+				PitchCamera = camera.Pitch;
+				camera.SwichCameraMode(positionCharacter+glm::vec3(
+					-2*glm::cos(glm::radians(-rotateCharacter+90))+ 0.4 * glm::sin(glm::radians(-rotateCharacter + 90)),
+					2.0f,
+					 -2 * glm::sin(glm::radians(-rotateCharacter + 90))+0.4 * glm::cos(glm::radians(-rotateCharacter + 90))),
+					-rotateCharacter * rotAjuste +90);
+			}
+			else
+			{
+				cameraMode = 0;
+				camera.SwichCameraMode(positionCamera, YawCamera, PitchCamera);
+			}	
+		}
 	}
-	if (glfwGetKey(window, GLFW_KEY_DOWN) == GLFW_PRESS) {
+	if (glfwGetKey(window, GLFW_KEY_R) == GLFW_PRESS and cameraMode == 0)
+		rotateCharacter -= 2;
+	// Character movement
+	if (glfwGetKey(window, GLFW_KEY_UP) == GLFW_PRESS and cameraMode==0) {
 		firstMouse = true;
-		camera.ProcessMouseMovement(0,-1);
+		camera.ProcessMouseMovement(0,2);
+	}
+	if (glfwGetKey(window, GLFW_KEY_DOWN) == GLFW_PRESS and cameraMode == 0) {
+		firstMouse = true;
+		camera.ProcessMouseMovement(0,-2);
 	}
 	if (glfwGetKey(window, GLFW_KEY_LEFT) == GLFW_PRESS) {
 		firstMouse = true;
-		camera.ProcessMouseMovement(-1,0);
+		if (cameraMode == 1) {
+			rotateCharacter += 2;
+	
+			camera.SwichCameraMode(positionCharacter + glm::vec3(
+				-2 * glm::cos(glm::radians(-rotateCharacter * rotAjuste + 90)) + 0.4 * glm::sin(glm::radians(-rotateCharacter * rotAjuste + 90)),
+				2.0f,
+				-2 * glm::sin(glm::radians(-rotateCharacter * rotAjuste + 90)) + 0.4 * glm::cos(glm::radians(-rotateCharacter * rotAjuste + 90))),
+				-rotateCharacter * rotAjuste + 90);
+		}
+		else {
+		camera.ProcessMouseMovement(-2,0);
+		}
 	}
 	if (glfwGetKey(window, GLFW_KEY_RIGHT) == GLFW_PRESS) {
 		firstMouse = true;
-		camera.ProcessMouseMovement(1,0);
+		if (cameraMode==1) {
+			rotateCharacter -= 2;
+	
+			camera.SwichCameraMode(positionCharacter + glm::vec3(
+				-2 * glm::cos(glm::radians(-rotateCharacter * rotAjuste + 90)) + 0.4 * glm::sin(glm::radians(-rotateCharacter * rotAjuste + 90)),
+				2.0f,
+				-2 * glm::sin(glm::radians(-rotateCharacter * rotAjuste + 90)) + 0.4 * glm::cos(glm::radians(-rotateCharacter * rotAjuste + 90))),
+				-rotateCharacter * rotAjuste + 90);
+		}
+		else {
+		camera.ProcessMouseMovement(2,0);
+		}
 	}
 
 	if (glfwGetKey(window, GLFW_KEY_I) == GLFW_PRESS)
@@ -595,7 +729,11 @@ void mouse_callback(GLFWwindow* window, double xpos, double ypos)
 	lastX = (float)xpos;
 	lastY = (float)ypos;
 	//std::cout <<"X offset: " << xoffset <<"Y offset: " << yoffset<<std::endl;
-	camera.ProcessMouseMovement(xoffset, yoffset);
+	if (cameraMode == 0)
+	{
+		camera.ProcessMouseMovement(xoffset, yoffset);
+
+	}
 }
 
 // glfw: Complemento para el movimiento y eventos del mouse

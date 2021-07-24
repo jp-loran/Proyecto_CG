@@ -119,6 +119,12 @@ public:
         if (Zoom >= 45.0f)
             Zoom = 45.0f;
     }
+    void SwichCameraMode(glm::vec3 position, int YawN,int PitchN=0) {
+        Position = position;
+        Yaw = YawN;
+        Pitch = PitchN;
+        updateCameraVectors();
+    }
 
 private:
     // Calculates the front vector from the Camera's (updated) Euler Angles

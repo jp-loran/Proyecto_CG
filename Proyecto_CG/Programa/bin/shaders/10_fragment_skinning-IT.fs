@@ -25,7 +25,7 @@ void main()
     vec3 l = normalize( LightDirection_cameraspace );
 
     float intensity = clamp(dot(ex_N, l),0, 1);
-    vec4 MaterialDiffuseColor = intensity * vec4(1.0, 0.0, 0.0, 1.0);
+    vec4 MaterialDiffuseColor = intensity * vec4(0.5, 0.5, 0.5, 1.0);
 
     // Intensidad del punto brilloso especular
     vec4 LightPower = vec4(1.0f,1.0f,1.0f,1.0f);
@@ -42,7 +42,7 @@ void main()
     float cosAlpha = clamp( dot( E,R ), 0, 1 );
 
     // Cálculo de la componente especular
-    vec4 MaterialSpecularColor =  vec4(1.0, 0.0, 1.0, 1.0) * LightPower * pow(cosAlpha,5);
+    vec4 MaterialSpecularColor =  vec4(1.0, 1.0, 1.0, 1.0) * LightPower * pow(cosAlpha,5);
 
     vec4 texel = texture(texture_diffuse1, TexCoords);
 

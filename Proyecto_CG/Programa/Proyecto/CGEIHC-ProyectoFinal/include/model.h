@@ -147,7 +147,7 @@ public:
 		const aiAnimation* pAnimation = scene->mAnimations[0];
 		if (pAnimation == nullptr) return -1.0;
 
-		cout << "Animation total frames:" << pAnimation->mDuration << endl;
+		//cout << "Animation total frames:" << pAnimation->mDuration << endl;
 
 		return pAnimation->mDuration;
 
@@ -158,7 +158,7 @@ public:
 		const aiAnimation* pAnimation = scene->mAnimations[0];
 		if (pAnimation == nullptr) return -1.0;
 
-		cout << "Animation framerate:" << pAnimation->mTicksPerSecond << " fps" << endl;
+		//cout << "Animation framerate:" << pAnimation->mTicksPerSecond << " fps" << endl;
 
 		return  pAnimation->mTicksPerSecond;
 	}
