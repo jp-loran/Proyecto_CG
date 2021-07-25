@@ -760,41 +760,29 @@ void processInput(GLFWwindow* window)
 
 	if (glfwGetKey(window, GLFW_KEY_I) == GLFW_PRESS)
 	{
-<<<<<<< Updated upstream
 		rotacionPuertas -= 0.3;
-=======
 		rotacionPuertas -= elapsedTime*velocidadPuerta;
->>>>>>> Stashed changes
 		if (rotacionPuertas < -100.0f)
 			rotacionPuertas = -100.0f;
 	}
 	if (glfwGetKey(window, GLFW_KEY_K) == GLFW_PRESS)
 	{
-<<<<<<< Updated upstream
 		rotacionPuertas += 0.3;
-=======
 		rotacionPuertas += elapsedTime*velocidadPuerta;
->>>>>>> Stashed changes
 		if (rotacionPuertas > 0.0f)
 			rotacionPuertas = 0.0f;
 	}
 	if (glfwGetKey(window, GLFW_KEY_U) == GLFW_PRESS)
 	{
-<<<<<<< Updated upstream
 		rotacionTapaInodoro -= 0.3;
-=======
 		rotacionTapaInodoro -= elapsedTime*velocidadTapaInodoro;
->>>>>>> Stashed changes
 		if (rotacionTapaInodoro < -90.0f)
 			rotacionTapaInodoro = -90.0f;
 	}
 	if (glfwGetKey(window, GLFW_KEY_J) == GLFW_PRESS)
 	{
-<<<<<<< Updated upstream
 		rotacionTapaInodoro += 0.3;
-=======
 		rotacionTapaInodoro += elapsedTime*velocidadTapaInodoro;
->>>>>>> Stashed changes
 		if (rotacionTapaInodoro > 0.0f)
 			rotacionTapaInodoro = 0.0f;
 	}
