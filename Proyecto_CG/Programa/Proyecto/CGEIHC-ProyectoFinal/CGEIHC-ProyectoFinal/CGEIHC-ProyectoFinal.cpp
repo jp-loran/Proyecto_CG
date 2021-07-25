@@ -60,6 +60,10 @@ float rotacionPuertas = 0.0f;
 float traslacionVentanas = 0.0f;
 float rotacionTapaInodoro = 0.0f;
 
+float velocidadPuerta = 110.0f / 3.0f;
+float velocidadVentanas = 1.215f / 2.0f;
+float velocidadTapaInodoro = 90.0f / 2.0f;
+
 // Fuentes de luz
 Light sun = Light(glm::vec3(0.0f,100.0f,0.0f), glm::vec3(0.0f,-1.0f,0.0f), glm::vec4(1.0f,1.0f,1.0f,1.0f), glm::vec4(100.0f,100.0f,100.0f,100.0f),1,20.f);
 Light casa = Light(glm::vec3(-11.81f, 2.70f, -3.485f), glm::vec3(0.0f, -1.0f, 0.0f), glm::vec4(1.0f, 1.0f, 1.0f, 1.0f), glm::vec4(50.0f, 50.0f, 50.0f, 50.0f), 10, 10.f);
@@ -756,37 +760,53 @@ void processInput(GLFWwindow* window)
 
 	if (glfwGetKey(window, GLFW_KEY_I) == GLFW_PRESS)
 	{
+<<<<<<< Updated upstream
 		rotacionPuertas -= 0.3;
+=======
+		rotacionPuertas -= elapsedTime*velocidadPuerta;
+>>>>>>> Stashed changes
 		if (rotacionPuertas < -100.0f)
 			rotacionPuertas = -100.0f;
 	}
 	if (glfwGetKey(window, GLFW_KEY_K) == GLFW_PRESS)
 	{
+<<<<<<< Updated upstream
 		rotacionPuertas += 0.3;
+=======
+		rotacionPuertas += elapsedTime*velocidadPuerta;
+>>>>>>> Stashed changes
 		if (rotacionPuertas > 0.0f)
 			rotacionPuertas = 0.0f;
 	}
 	if (glfwGetKey(window, GLFW_KEY_U) == GLFW_PRESS)
 	{
+<<<<<<< Updated upstream
 		rotacionTapaInodoro -= 0.3;
+=======
+		rotacionTapaInodoro -= elapsedTime*velocidadTapaInodoro;
+>>>>>>> Stashed changes
 		if (rotacionTapaInodoro < -90.0f)
 			rotacionTapaInodoro = -90.0f;
 	}
 	if (glfwGetKey(window, GLFW_KEY_J) == GLFW_PRESS)
 	{
+<<<<<<< Updated upstream
 		rotacionTapaInodoro += 0.3;
+=======
+		rotacionTapaInodoro += elapsedTime*velocidadTapaInodoro;
+>>>>>>> Stashed changes
 		if (rotacionTapaInodoro > 0.0f)
 			rotacionTapaInodoro = 0.0f;
 	}
 	if (glfwGetKey(window, GLFW_KEY_P) == GLFW_PRESS)
 	{
-		traslacionVentanas -= 0.01;
+		traslacionVentanas -= elapsedTime*velocidadVentanas;
 		if (traslacionVentanas < -0.55f)
 			traslacionVentanas = -0.55f;
 	}
 	if (glfwGetKey(window, GLFW_KEY_L) == GLFW_PRESS)
 	{
-		traslacionVentanas += 0.01;
+		traslacionVentanas += elapsedTime*velocidadVentanas;
 		if (traslacionVentanas > 0.665f)
 			traslacionVentanas = 0.665f;
 	}
