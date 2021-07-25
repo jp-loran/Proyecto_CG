@@ -756,25 +756,25 @@ void processInput(GLFWwindow* window)
 
 	if (glfwGetKey(window, GLFW_KEY_I) == GLFW_PRESS)
 	{
-		rotacionPuertas -= 0.1;
+		rotacionPuertas -= 0.3;
 		if (rotacionPuertas < -100.0f)
 			rotacionPuertas = -100.0f;
 	}
 	if (glfwGetKey(window, GLFW_KEY_K) == GLFW_PRESS)
 	{
-		rotacionPuertas += 0.1;
+		rotacionPuertas += 0.3;
 		if (rotacionPuertas > 0.0f)
 			rotacionPuertas = 0.0f;
 	}
 	if (glfwGetKey(window, GLFW_KEY_U) == GLFW_PRESS)
 	{
-		rotacionTapaInodoro -= 0.1;
+		rotacionTapaInodoro -= 0.3;
 		if (rotacionTapaInodoro < -90.0f)
 			rotacionTapaInodoro = -90.0f;
 	}
 	if (glfwGetKey(window, GLFW_KEY_J) == GLFW_PRESS)
 	{
-		rotacionTapaInodoro += 0.1;
+		rotacionTapaInodoro += 0.3;
 		if (rotacionTapaInodoro > 0.0f)
 			rotacionTapaInodoro = 0.0f;
 	}
