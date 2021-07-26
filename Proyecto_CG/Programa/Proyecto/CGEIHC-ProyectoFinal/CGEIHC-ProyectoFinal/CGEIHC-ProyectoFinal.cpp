@@ -17,6 +17,9 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
+// irrKlang sound library
+#include <irrKlang.h>
+
 // Model loading classes
 #include <shader_m.h>
 #include <camera.h>
@@ -92,11 +95,24 @@ float rotAjuste = 1.0f;
 glm::vec3 ufoPoss = glm::vec3(0.0f);
 float ufoAngle = 0.0f;
 float ufoRadio = 8.0f;
+
+//Sonido
+irrklang::ISoundEngine* SoundEngine = irrklang::createIrrKlangDevice();
+bool music = false;
+float delayMusic = 0.0f;
+bool changeMusic = true;
+irrklang::ISound* snd;
+irrklang::ISound* sndGrass = SoundEngine->play3D("sounds/footstep.mp3", irrklang::vec3df(positionCharacter.x, positionCharacter.y, positionCharacter.z), true, true);
+float grassTime;
+bool walking = false;
+
+
 // Entrada a función principal
 
 int main()
 {
 	// Inicialización de GLFW
+	
 
 	glfwInit();
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
@@ -221,7 +237,9 @@ int main()
 
 	// Dibujar en malla de alambre
 	// glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-
+	//volumen
+	sndGrass->setMinDistance(2.0f);
+	sndGrass->setVolume(0.4);
 	// Definicion de fuentes de luz
 	delayCameraMode= (float)glfwGetTime();
 	// Loop de renderizado
@@ -280,6 +298,21 @@ int main()
 		if((currentFrame-delayCameraMode)>=0.5f){
 			changeCameraMode = true;
 		}
+		//Espero de 0.5 s para prender o apagar la musica
+		if ((currentFrame - delayMusic) >= 0.5f) {
+			changeMusic = true;
+		}
+
+		if ((currentFrame - grassTime) >= 0.5f and walking==false){
+			walking = true;
+			sndGrass->setIsPaused(true);
+		}
+		if (sndGrass)
+			sndGrass->setPosition(irrklang::vec3df(positionCharacter.x, positionCharacter.y, positionCharacter.z));
+		if (snd)
+			snd->setPosition(irrklang::vec3df(positionCharacter.x, positionCharacter.y, positionCharacter.z));
+
+		
 		//cout << currentFrame - delayCameraMode << endl;
 		// Procesa la entrada del teclado o mouse
 		processInput(window);
@@ -535,90 +568,90 @@ int main()
 			cristal.diffuse = glm::vec4(0.0f, 0.4f, 0.7f, 1.0f);
 			fresnelShader.setFloat("transparency", cristal.transparency);
 			fresnelShader.setVec4("reflectColor", cristal.diffuse);
-			cristales.Draw(fresnelShader);
+cristales.Draw(fresnelShader);
 
-			// Metales
-			Material metal;
-			// Propiedades del material
-			metal.transparency = 1.0f;
-			fresnelShader.setFloat("transparency", metal.transparency);
-			fresnelShader.setVec4("reflectColor", metal.diffuse);
-			metales.Draw(fresnelShader);
+// Metales
+Material metal;
+// Propiedades del material
+metal.transparency = 1.0f;
+fresnelShader.setFloat("transparency", metal.transparency);
+fresnelShader.setVec4("reflectColor", metal.diffuse);
+metales.Draw(fresnelShader);
 
 
 
-			// Materiales de fresnel con transformaciones geometricas
+// Materiales de fresnel con transformaciones geometricas
 
-			// Metales
-			// Puerta principal
-			model = glm::translate(model, glm::vec3(-6.0822f, -0.359038f, 0.435927f));
-			model = glm::rotate(model, glm::radians(rotacionPuertas), glm::vec3(0.0f, 0.0f, 1.0f));
-			fresnelShader.setMat4("model", model);
-			puertaPrincipal_metales.Draw(fresnelShader);
-			model = glm::mat4(1.0f);
-			model = glm::rotate(model, glm::radians(-90.0f), glm::vec3(1.0f, 0.0f, 0.0f));
+// Metales
+// Puerta principal
+model = glm::translate(model, glm::vec3(-6.0822f, -0.359038f, 0.435927f));
+model = glm::rotate(model, glm::radians(rotacionPuertas), glm::vec3(0.0f, 0.0f, 1.0f));
+fresnelShader.setMat4("model", model);
+puertaPrincipal_metales.Draw(fresnelShader);
+model = glm::mat4(1.0f);
+model = glm::rotate(model, glm::radians(-90.0f), glm::vec3(1.0f, 0.0f, 0.0f));
 
-			// Puerta de los banios
-			model = glm::translate(model, glm::vec3(-6.542f, -2.211f, 0.2994f));
-			model = glm::rotate(model, glm::radians(-rotacionPuertas), glm::vec3(0.0f, 0.0f, 1.0f));
-			fresnelShader.setMat4("model", model);
-			puertasBanios_metales.Draw(fresnelShader);
-			model = glm::mat4(1.0f);
-			model = glm::rotate(model, glm::radians(-90.0f), glm::vec3(1.0f, 0.0f, 0.0f));
+// Puerta de los banios
+model = glm::translate(model, glm::vec3(-6.542f, -2.211f, 0.2994f));
+model = glm::rotate(model, glm::radians(-rotacionPuertas), glm::vec3(0.0f, 0.0f, 1.0f));
+fresnelShader.setMat4("model", model);
+puertasBanios_metales.Draw(fresnelShader);
+model = glm::mat4(1.0f);
+model = glm::rotate(model, glm::radians(-90.0f), glm::vec3(1.0f, 0.0f, 0.0f));
 
-			// Puerta del Cuarto A
-			model = glm::translate(model, glm::vec3(-7.599f, 0.2697f, 3.329f));
-			model = glm::rotate(model, glm::radians(-rotacionPuertas), glm::vec3(0.0f, 0.0f, 1.0f));
-			fresnelShader.setMat4("model", model);
-			puertaCuartoA_metales.Draw(fresnelShader);
-			model = glm::mat4(1.0f);
-			model = glm::rotate(model, glm::radians(-90.0f), glm::vec3(1.0f, 0.0f, 0.0f));
+// Puerta del Cuarto A
+model = glm::translate(model, glm::vec3(-7.599f, 0.2697f, 3.329f));
+model = glm::rotate(model, glm::radians(-rotacionPuertas), glm::vec3(0.0f, 0.0f, 1.0f));
+fresnelShader.setMat4("model", model);
+puertaCuartoA_metales.Draw(fresnelShader);
+model = glm::mat4(1.0f);
+model = glm::rotate(model, glm::radians(-90.0f), glm::vec3(1.0f, 0.0f, 0.0f));
 
-			// Puerta del Cuarto B
-			model = glm::translate(model, glm::vec3(-10.29f, 0.2698f, 3.329f));
-			model = glm::rotate(model, glm::radians(-rotacionPuertas), glm::vec3(0.0f, 0.0f, 1.0f));
-			fresnelShader.setMat4("model", model);
-			puertaCuartoB_metales.Draw(fresnelShader);
-			model = glm::mat4(1.0f);
-			model = glm::rotate(model, glm::radians(-90.0f), glm::vec3(1.0f, 0.0f, 0.0f));
+// Puerta del Cuarto B
+model = glm::translate(model, glm::vec3(-10.29f, 0.2698f, 3.329f));
+model = glm::rotate(model, glm::radians(-rotacionPuertas), glm::vec3(0.0f, 0.0f, 1.0f));
+fresnelShader.setMat4("model", model);
+puertaCuartoB_metales.Draw(fresnelShader);
+model = glm::mat4(1.0f);
+model = glm::rotate(model, glm::radians(-90.0f), glm::vec3(1.0f, 0.0f, 0.0f));
 
-			// Cristales
-			fresnelShader.setFloat("transparency", cristal.transparency);
-			fresnelShader.setVec4("reflectColor", cristal.diffuse);
+// Cristales
+fresnelShader.setFloat("transparency", cristal.transparency);
+fresnelShader.setVec4("reflectColor", cristal.diffuse);
 
-			// Puerta Principal
-			model = glm::translate(model, glm::vec3(-6.0822f, -0.359038f, 0.435927f));
-			model = glm::rotate(model, glm::radians(rotacionPuertas), glm::vec3(0.0f, 0.0f, 1.0f));
-			fresnelShader.setMat4("model", model);
-			puertaPrincipal_cristales.Draw(fresnelShader);
-			model = glm::mat4(1.0f);
-			model = glm::rotate(model, glm::radians(-90.0f), glm::vec3(1.0f, 0.0f, 0.0f));
+// Puerta Principal
+model = glm::translate(model, glm::vec3(-6.0822f, -0.359038f, 0.435927f));
+model = glm::rotate(model, glm::radians(rotacionPuertas), glm::vec3(0.0f, 0.0f, 1.0f));
+fresnelShader.setMat4("model", model);
+puertaPrincipal_cristales.Draw(fresnelShader);
+model = glm::mat4(1.0f);
+model = glm::rotate(model, glm::radians(-90.0f), glm::vec3(1.0f, 0.0f, 0.0f));
 
-			// Ventanas movibles 
-			model = glm::translate(model, glm::vec3(0.0f, traslacionVentanas, 0.0f));
-			fresnelShader.setMat4("model", model);
-			ventanasMovibles_cristales.Draw(fresnelShader);
-			model = glm::mat4(1.0f);
-			model = glm::rotate(model, glm::radians(-90.0f), glm::vec3(1.0f, 0.0f, 0.0f));
-			
-			
-			//UFO
-			model = glm::mat4(1.0f);
-			model = glm::translate(model, glm::vec3(ufoPoss.x, 0,ufoPoss.z ));
-			model = glm::rotate(model, glm::radians(-90.0f), glm::vec3(1.0f, 0.0f, 0.0f));
-			fresnelShader.setMat4("model", model);
-			Material beamMat;
-			beamMat.transparency = 0.4f;
-			beamMat.diffuse = glm::vec4(0.4f, 0.4f, 0.0f, 1.0f);
-			fresnelShader.setFloat("transparency", beamMat.transparency);
-			fresnelShader.setVec4("reflectColor", beamMat.diffuse);
-			beam.Draw(fresnelShader);
+// Ventanas movibles 
+model = glm::translate(model, glm::vec3(0.0f, traslacionVentanas, 0.0f));
+fresnelShader.setMat4("model", model);
+ventanasMovibles_cristales.Draw(fresnelShader);
+model = glm::mat4(1.0f);
+model = glm::rotate(model, glm::radians(-90.0f), glm::vec3(1.0f, 0.0f, 0.0f));
 
-			Material ufoMat;
-			ufoMat.transparency = 1.0f;
-			fresnelShader.setFloat("transparency", ufoMat.transparency);
-			fresnelShader.setVec4("reflectColor", ufoMat.diffuse);
-			ufo.Draw(fresnelShader);
+
+//UFO
+model = glm::mat4(1.0f);
+model = glm::translate(model, glm::vec3(ufoPoss.x, 0, ufoPoss.z));
+model = glm::rotate(model, glm::radians(-90.0f), glm::vec3(1.0f, 0.0f, 0.0f));
+fresnelShader.setMat4("model", model);
+Material beamMat;
+beamMat.transparency = 0.4f;
+beamMat.diffuse = glm::vec4(0.4f, 0.4f, 0.0f, 1.0f);
+fresnelShader.setFloat("transparency", beamMat.transparency);
+fresnelShader.setVec4("reflectColor", beamMat.diffuse);
+beam.Draw(fresnelShader);
+
+Material ufoMat;
+ufoMat.transparency = 1.0f;
+fresnelShader.setFloat("transparency", ufoMat.transparency);
+fresnelShader.setVec4("reflectColor", ufoMat.diffuse);
+ufo.Draw(fresnelShader);
 
 		}
 
@@ -635,7 +668,11 @@ int main()
 		glfwSwapBuffers(window);
 		glfwPollEvents();
 	}
-
+	if (sndGrass) {
+		sndGrass->drop();
+		sndGrass = 0;
+	}
+	SoundEngine->removeAllSoundSources();
 	// glfw: Terminamos el programa y liberamos memoria
 	glfwTerminate();
 	return 0;
@@ -652,6 +689,12 @@ void processInput(GLFWwindow* window)
 		if (cameraMode == 1) {
 			float velocity = camera.MovementSpeed * deltaTime;
 			positionCharacter += camera.Front * velocity;
+			if (walking == true) {
+
+				sndGrass->setIsPaused(false);
+				walking = false;
+				grassTime = (float)glfwGetTime();
+			}
 
 		}
 
@@ -661,7 +704,12 @@ void processInput(GLFWwindow* window)
 		if (cameraMode == 1) {
 			float velocity = camera.MovementSpeed * deltaTime;
 			positionCharacter -= camera.Front * velocity;
+			if (walking == true) {
 
+				sndGrass->setIsPaused(false);
+				walking = false;
+				grassTime = (float)glfwGetTime();
+			}
 		}
 
 	}
@@ -670,7 +718,12 @@ void processInput(GLFWwindow* window)
 		if (cameraMode == 1) {
 			float velocity = camera.MovementSpeed * deltaTime;
 			positionCharacter -= camera.Right * velocity;
+			if (walking == true) {
 
+				sndGrass->setIsPaused(false);
+				walking = false;
+				grassTime = (float)glfwGetTime();
+			}
 		}
 	
 	}
@@ -679,7 +732,12 @@ void processInput(GLFWwindow* window)
 		if (cameraMode == 1) {
 			float velocity = camera.MovementSpeed * deltaTime;
 			positionCharacter += camera.Right * velocity;
+			if (walking == true) {
 
+				sndGrass->setIsPaused(false);
+				walking = false;
+				grassTime = (float)glfwGetTime();
+			}
 		}
 
 
@@ -716,8 +774,7 @@ void processInput(GLFWwindow* window)
 			}	
 		}
 	}
-	if (glfwGetKey(window, GLFW_KEY_R) == GLFW_PRESS and cameraMode == 0)
-		rotateCharacter -= 2;
+
 	// Character movement
 	if (glfwGetKey(window, GLFW_KEY_UP) == GLFW_PRESS and cameraMode==0) {
 		firstMouse = true;
@@ -730,8 +787,13 @@ void processInput(GLFWwindow* window)
 	if (glfwGetKey(window, GLFW_KEY_LEFT) == GLFW_PRESS) {
 		firstMouse = true;
 		if (cameraMode == 1) {
+			if (walking == true) {
+
+				sndGrass->setIsPaused(false);
+				walking = false;
+				grassTime = (float)glfwGetTime();
+			}
 			rotateCharacter += 2;
-	
 			camera.SwichCameraMode(positionCharacter + glm::vec3(
 				-2 * glm::cos(glm::radians(-rotateCharacter * rotAjuste + 90)) + 0.4 * glm::sin(glm::radians(-rotateCharacter * rotAjuste + 90)),
 				2.0f,
@@ -745,8 +807,13 @@ void processInput(GLFWwindow* window)
 	if (glfwGetKey(window, GLFW_KEY_RIGHT) == GLFW_PRESS) {
 		firstMouse = true;
 		if (cameraMode==1) {
+			if (walking == true){
+
+				sndGrass->setIsPaused(false);
+				walking = false;
+				grassTime = (float)glfwGetTime();
+			}
 			rotateCharacter -= 2;
-	
 			camera.SwichCameraMode(positionCharacter + glm::vec3(
 				-2 * glm::cos(glm::radians(-rotateCharacter * rotAjuste + 90)) + 0.4 * glm::sin(glm::radians(-rotateCharacter * rotAjuste + 90)),
 				2.0f,
@@ -814,7 +881,32 @@ void processInput(GLFWwindow* window)
 		modoFiesta = false;
 		casa.Color = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
 	}
-	
+	if (glfwGetKey(window, GLFW_KEY_Y) == GLFW_PRESS and changeMusic == true) {
+		delayMusic = (float)glfwGetTime();
+		changeMusic = false;
+		if (music == false) {
+			//SoundEngine->play2D("sounds/100real.mp3", true);
+			
+			snd= SoundEngine->play3D("sounds/100real.mp3", irrklang::vec3df(positionCharacter.x, positionCharacter.y, positionCharacter.z),true,true);
+			music = true;
+			if (snd){
+				snd->setMinDistance(2.0f);
+				//snd->setMaxDistance(6.0f);
+				snd->setVolume(0.4);
+				snd->setIsPaused(false);
+			}
+
+		}
+		else {
+			if (snd){
+				snd->drop();
+				snd = 0;
+			}
+			SoundEngine->removeSoundSource("sounds/100real.mp3");
+			music = false;
+		}
+
+	}
 }
 
 // glfw: Actualizamos el puerto de vista si hay cambios del tamaño
