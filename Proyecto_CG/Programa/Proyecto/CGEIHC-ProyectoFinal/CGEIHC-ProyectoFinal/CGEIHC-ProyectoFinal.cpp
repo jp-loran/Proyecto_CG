@@ -62,10 +62,14 @@ float tiempoPasadoFiesta;
 float rotacionPuertas = 0.0f;
 float traslacionVentanas = 0.0f;
 float rotacionTapaInodoro = 0.0f;
+float escalamientoGlobo = 1.0f;
+float desplazamientoGlobo;
+float tiempo = 0.0f;
 
 float velocidadPuerta = 110.0f / 3.0f;
 float velocidadVentanas = 1.215f / 2.0f;
 float velocidadTapaInodoro = 90.0f / 2.0f;
+float velocidadGlobo = 1.0f / 4.0f;
 
 // Fuentes de luz
 Light sun = Light(glm::vec3(0.0f,100.0f,0.0f), glm::vec3(0.0f,-1.0f,0.0f), glm::vec4(1.0f,1.0f,1.0f,1.0f), glm::vec4(100.0f,100.0f,100.0f,100.0f),1,20.f);
@@ -177,6 +181,7 @@ int main()
 	Model coche("models/coche.fbx");
 	Model ufo("models/ufo.fbx");
 	Model beam("models/beam.fbx");
+	Model globo("models/globo.fbx");
 	//Model sofa("models/sofa.fbx");
 	//Model libros("models/libros.fbx");
 	//Model tv("models/tv.fbx");
@@ -252,6 +257,7 @@ int main()
 		lastFrame = currentFrame;
 		elapsedTime += deltaTime;
 		tiempoPasadoFiesta += deltaTime;
+		tiempo += deltaTime;
 
 		if (elapsedTime > 1.0f / fps) {
 			animationCount++;
@@ -293,6 +299,8 @@ int main()
 				tiempoPasadoFiesta = 0.0f;
 			}
 		}
+
+		desplazamientoGlobo = 0.10f*sin(2*3.14159*(1.0f/3.0f)*tiempo);
 
 		//Espero de 0.5 s para volver a cambiar la camara
 		if((currentFrame-delayCameraMode)>=0.5f){
@@ -421,8 +429,8 @@ int main()
 			basicPhongShader.setVec4("MaterialDiffuseColor", brilloso.diffuse);
 			basicPhongShader.setVec4("MaterialSpecularColor", brilloso.specular);
 			basicPhongShader.setFloat("transparency", brilloso.transparency);
+			
 			brillosos.Draw(basicPhongShader);
-
 			coche.Draw(basicPhongShader);
 			
 			/*
@@ -503,11 +511,12 @@ int main()
 			puertaCuartoB_opacos.Draw(basicPhongShader);
 			model = glm::mat4(1.0f);
 			model = glm::rotate(model, glm::radians(-90.0f), glm::vec3(1.0f, 0.0f, 0.0f));
-
-			// Ventanas movibles 
-			model = glm::translate(model, glm::vec3(0.0f, traslacionVentanas, 0.0f));
+			
+			// Globo
+			model = glm::translate(model, glm::vec3(-1.0316f, 1.0074f, 4.7883f+desplazamientoGlobo));
+			model = glm::scale(model, glm::vec3(escalamientoGlobo, escalamientoGlobo, escalamientoGlobo));
 			basicPhongShader.setMat4("model", model);
-			ventanasMovibles_brillosos.Draw(basicPhongShader);
+			globo.Draw(basicPhongShader);
 			model = glm::mat4(1.0f);
 			model = glm::rotate(model, glm::radians(-90.0f), glm::vec3(1.0f, 0.0f, 0.0f));
 
@@ -529,6 +538,13 @@ int main()
 			model = glm::rotate(model, glm::radians(-rotacionTapaInodoro), glm::vec3(0.0f, -1.0f, 0.0f));
 			basicPhongShader.setMat4("model", model);
 			pb_inodoro_tapa.Draw(basicPhongShader);
+			model = glm::mat4(1.0f);
+			model = glm::rotate(model, glm::radians(-90.0f), glm::vec3(1.0f, 0.0f, 0.0f));
+
+			// Ventanas movibles 
+			model = glm::translate(model, glm::vec3(0.0f, traslacionVentanas, 0.0f));
+			basicPhongShader.setMat4("model", model);
+			ventanasMovibles_brillosos.Draw(basicPhongShader);
 			model = glm::mat4(1.0f);
 			model = glm::rotate(model, glm::radians(-90.0f), glm::vec3(1.0f, 0.0f, 0.0f));
 		}
@@ -568,90 +584,88 @@ int main()
 			cristal.diffuse = glm::vec4(0.0f, 0.4f, 0.7f, 1.0f);
 			fresnelShader.setFloat("transparency", cristal.transparency);
 			fresnelShader.setVec4("reflectColor", cristal.diffuse);
-cristales.Draw(fresnelShader);
+			cristales.Draw(fresnelShader);
 
-// Metales
-Material metal;
-// Propiedades del material
-metal.transparency = 1.0f;
-fresnelShader.setFloat("transparency", metal.transparency);
-fresnelShader.setVec4("reflectColor", metal.diffuse);
-metales.Draw(fresnelShader);
+			// Metales
+			Material metal;
+			// Propiedades del material
+			metal.transparency = 1.0f;
+			fresnelShader.setFloat("transparency", metal.transparency);
+			fresnelShader.setVec4("reflectColor", metal.diffuse);
+			metales.Draw(fresnelShader);
 
+			// Materiales de fresnel con transformaciones geometricas
 
+			// Metales
+			// Puerta principal
+			model = glm::translate(model, glm::vec3(-6.0822f, -0.359038f, 0.435927f));
+			model = glm::rotate(model, glm::radians(rotacionPuertas), glm::vec3(0.0f, 0.0f, 1.0f));
+			fresnelShader.setMat4("model", model);
+			puertaPrincipal_metales.Draw(fresnelShader);
+			model = glm::mat4(1.0f);
+			model = glm::rotate(model, glm::radians(-90.0f), glm::vec3(1.0f, 0.0f, 0.0f));
 
-// Materiales de fresnel con transformaciones geometricas
+			// Puerta de los banios
+			model = glm::translate(model, glm::vec3(-6.542f, -2.211f, 0.2994f));
+			model = glm::rotate(model, glm::radians(-rotacionPuertas), glm::vec3(0.0f, 0.0f, 1.0f));
+			fresnelShader.setMat4("model", model);
+			puertasBanios_metales.Draw(fresnelShader);
+			model = glm::mat4(1.0f);
+			model = glm::rotate(model, glm::radians(-90.0f), glm::vec3(1.0f, 0.0f, 0.0f));
 
-// Metales
-// Puerta principal
-model = glm::translate(model, glm::vec3(-6.0822f, -0.359038f, 0.435927f));
-model = glm::rotate(model, glm::radians(rotacionPuertas), glm::vec3(0.0f, 0.0f, 1.0f));
-fresnelShader.setMat4("model", model);
-puertaPrincipal_metales.Draw(fresnelShader);
-model = glm::mat4(1.0f);
-model = glm::rotate(model, glm::radians(-90.0f), glm::vec3(1.0f, 0.0f, 0.0f));
+			// Puerta del Cuarto A
+			model = glm::translate(model, glm::vec3(-7.599f, 0.2697f, 3.329f));
+			model = glm::rotate(model, glm::radians(-rotacionPuertas), glm::vec3(0.0f, 0.0f, 1.0f));
+			fresnelShader.setMat4("model", model);
+			puertaCuartoA_metales.Draw(fresnelShader);
+			model = glm::mat4(1.0f);
+			model = glm::rotate(model, glm::radians(-90.0f), glm::vec3(1.0f, 0.0f, 0.0f));
 
-// Puerta de los banios
-model = glm::translate(model, glm::vec3(-6.542f, -2.211f, 0.2994f));
-model = glm::rotate(model, glm::radians(-rotacionPuertas), glm::vec3(0.0f, 0.0f, 1.0f));
-fresnelShader.setMat4("model", model);
-puertasBanios_metales.Draw(fresnelShader);
-model = glm::mat4(1.0f);
-model = glm::rotate(model, glm::radians(-90.0f), glm::vec3(1.0f, 0.0f, 0.0f));
+			// Puerta del Cuarto B
+			model = glm::translate(model, glm::vec3(-10.29f, 0.2698f, 3.329f));
+			model = glm::rotate(model, glm::radians(-rotacionPuertas), glm::vec3(0.0f, 0.0f, 1.0f));
+			fresnelShader.setMat4("model", model);
+			puertaCuartoB_metales.Draw(fresnelShader);
+			model = glm::mat4(1.0f);
+			model = glm::rotate(model, glm::radians(-90.0f), glm::vec3(1.0f, 0.0f, 0.0f));
 
-// Puerta del Cuarto A
-model = glm::translate(model, glm::vec3(-7.599f, 0.2697f, 3.329f));
-model = glm::rotate(model, glm::radians(-rotacionPuertas), glm::vec3(0.0f, 0.0f, 1.0f));
-fresnelShader.setMat4("model", model);
-puertaCuartoA_metales.Draw(fresnelShader);
-model = glm::mat4(1.0f);
-model = glm::rotate(model, glm::radians(-90.0f), glm::vec3(1.0f, 0.0f, 0.0f));
+			// Cristales
+			fresnelShader.setFloat("transparency", cristal.transparency);
+			fresnelShader.setVec4("reflectColor", cristal.diffuse);
 
-// Puerta del Cuarto B
-model = glm::translate(model, glm::vec3(-10.29f, 0.2698f, 3.329f));
-model = glm::rotate(model, glm::radians(-rotacionPuertas), glm::vec3(0.0f, 0.0f, 1.0f));
-fresnelShader.setMat4("model", model);
-puertaCuartoB_metales.Draw(fresnelShader);
-model = glm::mat4(1.0f);
-model = glm::rotate(model, glm::radians(-90.0f), glm::vec3(1.0f, 0.0f, 0.0f));
+			// Puerta Principal
+			model = glm::translate(model, glm::vec3(-6.0822f, -0.359038f, 0.435927f));
+			model = glm::rotate(model, glm::radians(rotacionPuertas), glm::vec3(0.0f, 0.0f, 1.0f));
+			fresnelShader.setMat4("model", model);
+			puertaPrincipal_cristales.Draw(fresnelShader);
+			model = glm::mat4(1.0f);
+			model = glm::rotate(model, glm::radians(-90.0f), glm::vec3(1.0f, 0.0f, 0.0f));
 
-// Cristales
-fresnelShader.setFloat("transparency", cristal.transparency);
-fresnelShader.setVec4("reflectColor", cristal.diffuse);
-
-// Puerta Principal
-model = glm::translate(model, glm::vec3(-6.0822f, -0.359038f, 0.435927f));
-model = glm::rotate(model, glm::radians(rotacionPuertas), glm::vec3(0.0f, 0.0f, 1.0f));
-fresnelShader.setMat4("model", model);
-puertaPrincipal_cristales.Draw(fresnelShader);
-model = glm::mat4(1.0f);
-model = glm::rotate(model, glm::radians(-90.0f), glm::vec3(1.0f, 0.0f, 0.0f));
-
-// Ventanas movibles 
-model = glm::translate(model, glm::vec3(0.0f, traslacionVentanas, 0.0f));
-fresnelShader.setMat4("model", model);
-ventanasMovibles_cristales.Draw(fresnelShader);
-model = glm::mat4(1.0f);
-model = glm::rotate(model, glm::radians(-90.0f), glm::vec3(1.0f, 0.0f, 0.0f));
+			// Ventanas movibles 
+			model = glm::translate(model, glm::vec3(0.0f, traslacionVentanas, 0.0f));
+			fresnelShader.setMat4("model", model);
+			ventanasMovibles_cristales.Draw(fresnelShader);
+			model = glm::mat4(1.0f);
+			model = glm::rotate(model, glm::radians(-90.0f), glm::vec3(1.0f, 0.0f, 0.0f));
 
 
-//UFO
-model = glm::mat4(1.0f);
-model = glm::translate(model, glm::vec3(ufoPoss.x, 0, ufoPoss.z));
-model = glm::rotate(model, glm::radians(-90.0f), glm::vec3(1.0f, 0.0f, 0.0f));
-fresnelShader.setMat4("model", model);
-Material beamMat;
-beamMat.transparency = 0.4f;
-beamMat.diffuse = glm::vec4(0.4f, 0.4f, 0.0f, 1.0f);
-fresnelShader.setFloat("transparency", beamMat.transparency);
-fresnelShader.setVec4("reflectColor", beamMat.diffuse);
-beam.Draw(fresnelShader);
+			//UFO
+			model = glm::mat4(1.0f);
+			model = glm::translate(model, glm::vec3(ufoPoss.x, 0, ufoPoss.z));
+			model = glm::rotate(model, glm::radians(-90.0f), glm::vec3(1.0f, 0.0f, 0.0f));
+			fresnelShader.setMat4("model", model);
+			Material beamMat;
+			beamMat.transparency = 0.4f;
+			beamMat.diffuse = glm::vec4(0.4f, 0.4f, 0.0f, 1.0f);
+			fresnelShader.setFloat("transparency", beamMat.transparency);
+			fresnelShader.setVec4("reflectColor", beamMat.diffuse);
+			beam.Draw(fresnelShader);
 
-Material ufoMat;
-ufoMat.transparency = 1.0f;
-fresnelShader.setFloat("transparency", ufoMat.transparency);
-fresnelShader.setVec4("reflectColor", ufoMat.diffuse);
-ufo.Draw(fresnelShader);
+			Material ufoMat;
+			ufoMat.transparency = 1.0f;
+			fresnelShader.setFloat("transparency", ufoMat.transparency);
+			fresnelShader.setVec4("reflectColor", ufoMat.diffuse);
+			ufo.Draw(fresnelShader);
 
 		}
 
@@ -860,6 +874,18 @@ void processInput(GLFWwindow* window)
 		traslacionVentanas += elapsedTime*velocidadVentanas;
 		if (traslacionVentanas > 0.665f)
 			traslacionVentanas = 0.665f;
+	}
+	if (glfwGetKey(window, GLFW_KEY_F) == GLFW_PRESS)
+	{
+		escalamientoGlobo -= elapsedTime * velocidadGlobo;
+		if (escalamientoGlobo < 0.1f)
+			escalamientoGlobo = 0.1f;
+	}
+	if (glfwGetKey(window, GLFW_KEY_R) == GLFW_PRESS)
+	{
+		escalamientoGlobo += elapsedTime * velocidadGlobo;
+		if (escalamientoGlobo > 1.0f)
+			escalamientoGlobo = 1.0f;
 	}
 	if (glfwGetKey(window, GLFW_KEY_X) == GLFW_PRESS)
 	{
