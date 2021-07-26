@@ -39,3 +39,5 @@ P - Abre las ventanas
 L - Cierra las ventanas
 U - Abre los inodoros
 J - Cierra los inodoros
+R - Infla el globo
+F - Desinfla globo
