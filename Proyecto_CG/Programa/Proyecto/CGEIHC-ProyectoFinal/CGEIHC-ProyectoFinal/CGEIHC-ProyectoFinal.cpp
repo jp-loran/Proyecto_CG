@@ -154,6 +154,7 @@ int main()
 	Shader cubemapShader("shaders/10_vertex_cubemap.vs", "shaders/10_fragment_cubemap.fs");
 	Shader basicPhongShader("shaders/11_BasicPhongShader.vs", "shaders/11_BasicPhongShader.fs"); // opacos y plásticos, cerámicas
 	Shader fresnelShader("shaders/11_Fresnel.vs", "shaders/11_Fresnel.fs"); // metal y semitraslúcidos
+	Shader phongProcedural("shaders/12_PhongProcedural.vs", "shaders/12_PhongProcedural.fs");
 
 	// Máximo número de huesos: 100
 #define MAX_RIGGING_BONES 100
@@ -210,6 +211,8 @@ int main()
 	//Model donuts("models/materials/donuts.fbx");
 	//Model sphere("models/materials/sphere.fbx");
 	//Model monkey("models/materials/monkey.fbx");
+
+	Model banner_procedural("models/banner_procedural.fbx");
 
 	// Cubemap
 	/*vector<std::string> faces
@@ -666,6 +669,74 @@ int main()
 			fresnelShader.setFloat("transparency", ufoMat.transparency);
 			fresnelShader.setVec4("reflectColor", ufoMat.diffuse);
 			ufo.Draw(fresnelShader);
+
+		}
+
+		glUseProgram(0);
+
+		// Shader de animacion Procedural
+		{
+		// Activamos el shader 
+		phongProcedural.use();
+
+		// Aplicamos transformaciones de proyección y cámara (si las hubiera)
+		glm::mat4 projection = glm::perspective(glm::radians(camera.Zoom), (float)SCR_WIDTH / (float)SCR_HEIGHT, 0.1f, 100.0f);
+		glm::mat4 view = camera.GetViewMatrix();
+		phongProcedural.setMat4("projection", projection);
+		phongProcedural.setMat4("view", view);
+
+		// Aplicamos transformaciones del modelo
+		glm::mat4 model = glm::mat4(1.0f);
+		//model = glm::translate(model, glm::vec3(0.0f, 0.0f, 0.0f)); // translate it down so it's at the center of the scene
+		model = glm::rotate(model, glm::radians(-90.0f), glm::vec3(1.0f, 0.0f, 0.0f));
+		//model = glm::rotate(model, glm::radians(0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+		//model = glm::rotate(model, glm::radians(180.0f), glm::vec3(0.0f, 0.0f, 1.0f));
+		model = glm::scale(model, glm::vec3(1.0f, 1.0f, 1.0f));	// it's a bit too big for our scene, so scale it down
+		phongProcedural.setMat4("model", model);
+
+		// Propiedades de las fuentes de luz
+
+		phongProcedural.setVec3("lightPosition_0", sun.Position);
+		phongProcedural.setVec3("lightDirection_0", sun.Direction);
+
+		phongProcedural.setVec4("LightColor_0", sun.Color);
+		phongProcedural.setVec4("LightPower_0", sun.Power);
+		phongProcedural.setInt("alphaIndex_0", sun.alphaIndex);
+		phongProcedural.setFloat("distance_0", sun.distance);
+
+		phongProcedural.setVec3("lightPosition_1", casa.Position);
+		phongProcedural.setVec3("lightDirection_1", casa.Direction);
+
+		phongProcedural.setVec4("LightColor_1", casa.Color);
+		phongProcedural.setVec4("LightPower_1", casa.Power);
+		phongProcedural.setInt("alphaIndex_1", casa.alphaIndex);
+		phongProcedural.setFloat("distance_1", casa.distance);
+
+		phongProcedural.setVec3("eye", camera.Position);
+		phongProcedural.setFloat("tiempo", tiempo);
+
+		//cout << tiempo << endl;
+
+		// Enable blending
+		glEnable(GL_BLEND);
+		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+		Material opaco;
+		// Propiedades materiales
+		opaco.ambient = glm::vec4(0.8, 0.8, 0.8, 1.0);
+		opaco.diffuse = glm::vec4(0.5, 0.5, 0.5, 1.0);
+		opaco.specular = glm::vec4(0.1, 0.1, 0.1, 1.0);
+		basicPhongShader.setVec4("MaterialAmbientColor", opaco.ambient);
+		basicPhongShader.setVec4("MaterialDiffuseColor", opaco.diffuse);
+		basicPhongShader.setVec4("MaterialSpecularColor", opaco.specular);
+		basicPhongShader.setFloat("transparency", opaco.transparency);
+
+		model = glm::translate(model, glm::vec3(1.547f, -2.602f, 0.0f));
+		model = glm::rotate(model, glm::radians(90.0f), glm::vec3(0.0f, 0.0f, 1.0f));
+		phongProcedural.setMat4("model", model);
+		banner_procedural.Draw(phongProcedural);
+		//model = glm::mat4(1.0f);
+		//model = glm::rotate(model, glm::radians(-90.0f), glm::vec3(1.0f, 0.0f, 0.0f));
 
 		}
 
